@@ -266,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements MyConstants{
         if ((currentCurrency.getSellCource() <= 0f) || (currentCurrency.getBuyCource() <= 0f)) {
             return "0";
         }
-
         Spinner buysellSpinner = (Spinner) findViewById(R.id.buysell_spinner);
         String buySell = buysellSpinner.getSelectedItem().toString();
         if (buySell.equals(getResources().getString(R.string.buy))) {
