@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Обмен валют</string>
+    <string name="buy">купить</string>
+    <string name="sell">продать</string>
+    <string name="alert">Введите правильное число</string>
+    <string name="cancelBt">Отмена</string>
+    <string name="enterCurrency">Введите новые курсы</string>
+    <string name="okBt">Ок</string>
+    <string name="link_registre"><u>Регистрация</u></string>
+    <string name="empty_string"> </string>
+    <string name="authorization">Авторизация...</string>
+    <string name="enter_name">Введите своё имя</string>
+    <string name="save_btn">Сохранить</string>
+    <string name="text_pass">пароль</string>
+    <string name="text_rewrite_pass">повторите пароль</string>
+    <string name="loginLink"><u>Войти</u></string>
+    <string name="chanche_pass">Введите другой пароль</string>
+    <string name="existin_user">Это имя уже используется</string>
+    <string name="notValidName">Введите валидное имя</string>
+    <string name="notValidPass">Введите валидный пароль</string>
+    <string name="wrongLogin">Wrong user name or password</string>
+</resources>

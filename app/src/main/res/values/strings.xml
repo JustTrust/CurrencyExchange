@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Currency exchange</string>
+    <string name="buy">buy</string>
+    <string name="sell">sell</string>
+    <string name="alert">Enter right number</string>
+    <string name="enterCurrency">Enter new courses</string>
+    <string name="okBt">Ok</string>
+    <string name="cancelBt">Cancel</string>
+    <string name="link_registre">Registre</string>
+    <string name="empty_string"> </string>
+    <string name="authorization">Login please...</string>
+    <string name="save_btn">Save</string>
+    <string name="text_rewrite_pass">repeat password</string>
+    <string name="text_pass">password</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="loginLink"><u>Login</u></string>
+    <string name="notValidName">Input valid name</string>
+    <string name="wrongRepeatPass">Passwords dont mach</string>
+    <string name="notValidPass">Enter valid pssword</string>
+    <string name="existin_user">This name already used</string>
+    <string name="succsessfull_regisration">Sucsessful registrstion</string>
+    <string name="chanche_pass">Change your password</string>
+    <string name="wrongLogin">Wrong user name or password</string>
+</resources>
