@@ -257,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements MyConstants{
             Toast.makeText(MainActivity.this, getResources().getString(R.string.alert), Toast.LENGTH_LONG).show();
             return "0";
         }
-
         if (moneyValue <= 0f) {
             return "0";
         }
