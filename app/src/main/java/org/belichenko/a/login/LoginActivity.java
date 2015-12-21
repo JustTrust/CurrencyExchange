@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements MyConstants {
             SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor edit = mPrefs.edit();
             edit.putString(USER_IS_LOGIN, name);
-            edit.apply();
+            edit.commit();
             // clear fields
             editName.setText("");
             editPass.setText("");

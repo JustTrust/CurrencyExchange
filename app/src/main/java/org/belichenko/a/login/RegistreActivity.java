@@ -68,13 +68,12 @@ public class RegistreActivity extends AppCompatActivity implements MyConstants {
 
             SharedPreferences.Editor edit = mPrefs.edit();
             edit.putString(STORAGE_OF_USERS, users);
-            edit.apply();
+            edit.putString(USER_IS_LOGIN, name);
+            edit.commit();
 
             // start main acivity if sucsesful
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            String message = editName.getText().toString();
-            intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
         }
     }
