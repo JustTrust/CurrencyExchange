@@ -23,4 +23,5 @@
     <string name="logout"><u>Выход</u></string>
     <string name="succsessfull_regisration">Регистрация прошла успешно</string>
     <string name="wrongRepeatPass">Пароли не совпадают</string>
+    <string name="registre_header">Регистрация</string>
 </resources>

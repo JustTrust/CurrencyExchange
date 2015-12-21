@@ -22,4 +22,5 @@
     <string name="chanche_pass">Change your password</string>
     <string name="wrongLogin">Wrong user name or password</string>
     <string name="logout"><u>Logout</u></string>
+    <string name="registre_header">Registre</string>
 </resources>
