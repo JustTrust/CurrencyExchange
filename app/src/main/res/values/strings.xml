@@ -6,10 +6,10 @@
     <string name="enterCurrency">Enter new courses</string>
     <string name="okBt">Ok</string>
     <string name="cancelBt">Cancel</string>
-    <string name="link_registre">Registre</string>
+    <string name="link_registre"><u>Registre</u></string>
     <string name="empty_string"> </string>
     <string name="authorization">Login please...</string>
-    <string name="save_btn">Save</string>
+    <string name="save_btn"><u>Save</u></string>
     <string name="text_rewrite_pass">repeat password</string>
     <string name="text_pass">password</string>
     <string name="enter_name">Enter your name</string>
@@ -21,4 +21,5 @@
     <string name="succsessfull_regisration">Sucsessful registrstion</string>
     <string name="chanche_pass">Change your password</string>
     <string name="wrongLogin">Wrong user name or password</string>
+    <string name="logout"><u>Logout</u></string>
 </resources>

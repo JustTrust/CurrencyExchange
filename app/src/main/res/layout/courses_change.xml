@@ -33,14 +33,14 @@
             android:id="@+id/editNumBuy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:inputType="number|numberSigned|numberDecimal"
             android:padding="3dp" />
 
         <EditText
             android:id="@+id/editNumSell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:inputType="number|numberSigned|numberDecimal"
             android:padding="3dp" />
     </TableRow>
 

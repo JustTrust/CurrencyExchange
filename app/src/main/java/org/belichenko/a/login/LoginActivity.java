@@ -23,11 +23,20 @@ public class LoginActivity extends AppCompatActivity implements MyConstants {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // check in preferences a user is login
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String user = mPrefs.getString(USER_IS_LOGIN, null);
+        if (user != null) {
+            // go to main activity
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+        }
+
         editName = (EditText) findViewById(R.id.editLoginName);
         editPass = (EditText) findViewById(R.id.editLoginPass);
 
         // restore list of users
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         String users = mPrefs.getString(STORAGE_OF_USERS, null);
         storageOfUser.fillUsers(users);
     }
@@ -53,11 +62,17 @@ public class LoginActivity extends AppCompatActivity implements MyConstants {
             return;
         }
         if (storageOfUser.findUser(name, pass)) {
+            // set up user name to Preferences
+            SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor edit = mPrefs.edit();
+            edit.putString(USER_IS_LOGIN, name);
+            edit.apply();
+            // clear fields
+            editName.setText("");
+            editPass.setText("");
             // go to main activity
             Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            String message = editName.getText().toString();
-            intent.putExtra(EXTRA_MESSAGE, message);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         } else {
             Toast.makeText(LoginActivity.this, getString(R.string.wrongLogin), Toast.LENGTH_SHORT).show();

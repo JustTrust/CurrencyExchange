@@ -2,6 +2,9 @@ package org.belichenko.a.currencyexchange;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,9 +19,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.belichenko.a.constant.MyConstants;
+import org.belichenko.a.login.LoginActivity;
+
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MyConstants{
 
     private ArrayList<Bank> listOfBanks = new ArrayList<>();
     private MyCurrency currentCurrency;
@@ -33,6 +39,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // check in preferences a user is login
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String user = mPrefs.getString(USER_IS_LOGIN, null);
+        if (user == null){
+            // user not login go to login activity
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+        }else{
+            String title = getTitle().toString();
+            setTitle(title +": "+user);
+        }
 
         // fill the banks list
         for (DefaultBanks defBank : DefaultBanks.values()) {
@@ -57,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         // set banks spinner
         Spinner bankSpinner = (Spinner) findViewById(R.id.bank_spinner);
-        ArrayAdapter<Bank> adapterBank = new ArrayAdapter<Bank>(this, android.R.layout.simple_spinner_dropdown_item, listOfBanks);
+        ArrayAdapter<Bank> adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listOfBanks);
         bankSpinner.setAdapter(adapterBank);
 
         bankSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -81,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         listOfBuySell.add(getResources().getString(R.string.buy));
 
         Spinner buysellSpinner = (Spinner) findViewById(R.id.buysell_spinner);
-        ArrayAdapter<String> adapterBuySell = new ArrayAdapter<String>(
+        ArrayAdapter<String> adapterBuySell = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_dropdown_item, listOfBuySell);
         buysellSpinner.setAdapter(adapterBuySell);
         buysellSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -192,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
      * @param currencyList
      */
     private void updateCurrencyList(ArrayList<MyCurrency> currencyList) {
-        ArrayAdapter<MyCurrency> adapterCurrency = new ArrayAdapter<MyCurrency>(
+        ArrayAdapter<MyCurrency> adapterCurrency = new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_single_choice, currencyList);
 
         ListView listOfCurrency = (ListView) findViewById(R.id.listOfCurrency);
@@ -231,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
     private String doCalculate() {
 
         EditText editMoney = (EditText) findViewById(R.id.money_value);
-        float moneyValue = 0f;
+        float moneyValue;
         try {
             moneyValue = Float.valueOf(editMoney.getText().toString());
         } catch (NumberFormatException e) {
@@ -258,4 +277,19 @@ public class MainActivity extends AppCompatActivity {
         }
         return "0";
     }
+
+    public void logoutUser(View view){
+
+        // logout user from preferences
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edit = mPrefs.edit();
+        edit.putString(USER_IS_LOGIN, null);
+        edit.apply();
+
+        // user not login go to login activity
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+    }
+
 }
