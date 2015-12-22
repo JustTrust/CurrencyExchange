@@ -1,27 +1,37 @@
 package org.belichenko.a.login;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.ArrayMap;
 
+import com.google.gson.Gson;
+
+import org.belichenko.a.App;
 import org.belichenko.a.constant.MyConstants;
 import org.belichenko.a.currencyexchange.R;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 /**
  * Contains list of users and passwords
  */
-public class StorageOfUser implements MyConstants {
+public class StorageOfUser implements MyConstants, Serializable{
     private static StorageOfUser ourInstance = new StorageOfUser();
     private ArrayMap<String, String> users = new ArrayMap<>();
+    private static App context = App.getInstance();
+    private static SharedPreferences mPrefs;
 
     public static StorageOfUser getInstance() {
         return ourInstance;
     }
 
     private StorageOfUser() {
+        mPrefs = context.getSharedPreferences(MAIN_PREFERENCE, Context.MODE_PRIVATE);
+        fillUsers();
     }
 
     public int setUser(String name, String pass) {
@@ -30,10 +40,19 @@ public class StorageOfUser implements MyConstants {
             return R.string.existin_user; // we already have this user
         }
         String hashPass = getSha1Hash(pass);
-        if (hashPass != null) { //14CC5DB28AAF9CFF18AC396CF140D9D33EE4B03A
+        if (hashPass != null) {
             users.put(name, hashPass);
-            return R.string.succsessfull_regisration;
 
+            // TODO: 22.12.2015 check json
+            Gson json = new Gson();
+            String jString = json.toJson(users);
+
+            SharedPreferences.Editor edit = mPrefs.edit();
+            edit.putString(STORAGE_OF_USERS, users.toString());
+            edit.putString(USER_IS_LOGIN, name);
+            edit.apply();
+
+            return R.string.succsessfull_regisration;
         }
         return R.string.chanche_pass;
     }
@@ -96,10 +115,13 @@ public class StorageOfUser implements MyConstants {
         return result.toString();
     }
 
-    public void fillUsers(String source) {
-        if ((source != null) && (source.length() > 0)) {
+    public void fillUsers() {
+
+        String usersString = mPrefs.getString(STORAGE_OF_USERS, null);
+
+        if ((usersString != null) && (usersString.length() > 0)) {
             users.clear();
-            String[] keyValue = source.split(";");
+            String[] keyValue = usersString.split(";");
             for (String elemnt:keyValue) {
                 if (elemnt.length()>0){
                     String[] s = elemnt.split("=");

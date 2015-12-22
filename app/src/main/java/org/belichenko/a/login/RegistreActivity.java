@@ -1,8 +1,6 @@
 package org.belichenko.a.login;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,9 +30,9 @@ public class RegistreActivity extends AppCompatActivity implements MyConstants {
         editRepeatPass = (EditText) findViewById(R.id.edit_rewrite_pass);
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra(EXTRA_MESSAGE);
-        if (message != null) {
-            editName.setText(message);
+        String messageName = intent.getStringExtra(EXTRA_MESSAGE);
+        if (messageName != null) {
+            editName.setText(messageName);
         }
     }
 
@@ -43,7 +41,7 @@ public class RegistreActivity extends AppCompatActivity implements MyConstants {
         String pass = editPass.getText().toString();
         String repeatPass = editRepeatPass.getText().toString();
 
-        if (name.isEmpty() | (!isStringValidate("^[a-z0-9_-]{6,26}$", name))) {
+        if (name.isEmpty() | (!isStringValidate("^[a-zA-Z0-9_-]{5,20}$", name))) {
             Toast.makeText(RegistreActivity.this, getString(R.string.notValidName), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -62,14 +60,6 @@ public class RegistreActivity extends AppCompatActivity implements MyConstants {
         Toast.makeText(RegistreActivity.this, getString(returnMessage), Toast.LENGTH_SHORT).show();
 
         if (returnMessage == R.string.succsessfull_regisration) {
-            //Creating a shared preference
-            SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-            String users = storageOfUser.toString();
-
-            SharedPreferences.Editor edit = mPrefs.edit();
-            edit.putString(STORAGE_OF_USERS, users);
-            edit.putString(USER_IS_LOGIN, name);
-            edit.commit();
 
             // start main acivity if sucsesful
             Intent intent = new Intent(this, MainActivity.class);
