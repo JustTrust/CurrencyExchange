@@ -7,7 +7,7 @@ import android.util.ArrayMap;
 import com.google.gson.Gson;
 
 import org.belichenko.a.App;
-import org.belichenko.a.constant.MyConstants;
+import org.belichenko.a.utils.MyConstants;
 import org.belichenko.a.currencyexchange.R;
 
 import java.io.Serializable;

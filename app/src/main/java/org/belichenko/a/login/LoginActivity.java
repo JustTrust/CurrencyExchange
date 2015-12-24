@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.belichenko.a.constant.MyConstants;
+import org.belichenko.a.utils.MyConstants;
 import org.belichenko.a.currencyexchange.MainActivity;
 import org.belichenko.a.currencyexchange.R;
 

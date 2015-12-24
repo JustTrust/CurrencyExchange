@@ -19,7 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.belichenko.a.constant.MyConstants;
+import org.belichenko.a.utils.MyConstants;
 import org.belichenko.a.login.LoginActivity;
 
 import java.util.ArrayList;
