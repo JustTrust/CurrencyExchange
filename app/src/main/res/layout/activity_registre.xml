@@ -1,32 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:padding="@dimen/activity_margin"
     android:orientation="vertical"
     tools:context="org.belichenko.a.login.RegistreActivity">
 
 
     <TextView
         android:id="@+id/text_registre_header"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:text="@string/registre_header"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/textName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/enter_name"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/activity_margin" />
 
     <EditText
         android:id="@+id/editName"
@@ -35,51 +27,51 @@
         android:layout_gravity="center_horizontal"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="" />
-
-    <TextView
-        android:id="@+id/text_pass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_pass"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:hint="@string/enter_name"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/text_registre_header"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/activity_margin" />
 
     <EditText
         android:id="@+id/edit_pass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPassword" />
-
-    <TextView
-        android:id="@+id/text_rewrite_pass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_rewrite_pass"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:inputType="textPassword"
+        android:hint="@string/text_pass"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/editName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/activity_margin" />
 
     <EditText
         android:id="@+id/edit_rewrite_pass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:hint="@string/text_rewrite_pass"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/edit_pass"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/activity_margin" />
 
     <TextView
         android:id="@+id/text_save"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:autoLink="all"
         android:clickable="true"
-        android:editable="false"
         android:enabled="true"
         android:focusable="true"
-        android:linksClickable="true"
         android:onClick="saveNewUser"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:text="@string/save_btn"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:gravity="center_horizontal" />
 
-</LinearLayout>
+</RelativeLayout>
 

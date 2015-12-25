@@ -9,8 +9,8 @@
     <string name="okBt">Ок</string>
     <string name="link_registre"><u>Регистрация</u></string>
     <string name="empty_string"> </string>
-    <string name="authorization">Авторизация...</string>
-    <string name="enter_name">Введите своё имя</string>
+    <string name="authorization">Авторизация</string>
+    <string name="enter_name">имя</string>
     <string name="save_btn"><u>Сохранить</u></string>
     <string name="text_pass">пароль</string>
     <string name="text_rewrite_pass">повторите пароль</string>

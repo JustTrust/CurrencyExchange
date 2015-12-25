@@ -31,30 +31,37 @@ public class LogRegActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_reg);
 
+        buildViewByOrientation();
+    }
+
+    private void buildViewByOrientation() {
+
         LinearLayout myLayout = (LinearLayout) findViewById(R.id.frame_fragment);
-        LoginFragment loginFrag = new LoginFragment();
-        RegistreFragment regFrag = new RegistreFragment();
-
-        // add two frame for two fragments
-        FrameLayout frameLeft = new FrameLayout(this);
-        FrameLayout frameRight = new FrameLayout(this);
-        setViewId(frameLeft);
-        setViewId(frameRight);
-
         LinearLayout.LayoutParams lparams = new LinearLayout
                 .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
 
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             // add two frames and two fragments
+            LoginFragment loginFrag = LoginFragment.newInstance(orientation, "");
+            RegistreFragment regFrag = RegistreFragment.newInstance(orientation, "");
+
+            FrameLayout frameLeft = new FrameLayout(this);
+            setViewId(frameLeft);
+            FrameLayout frameRight = new FrameLayout(this);
+            setViewId(frameRight);
+
             myLayout.addView(frameLeft, lparams);
             myLayout.addView(frameRight, lparams);
 
             getFragmentManager().beginTransaction().add(frameLeft.getId(), loginFrag, "loginFrag").commit();
             getFragmentManager().beginTransaction().add(frameRight.getId(), regFrag, "regFrag").commit();
 
-        } else { // portrait
-
+        } else {
+            LoginFragment loginFrag = LoginFragment.newInstance(orientation, "");
+            // portrait, add just one fragment
+            FrameLayout frameLeft = new FrameLayout(this);
+            setViewId(frameLeft);
             myLayout.addView(frameLeft, lparams);
             getFragmentManager().beginTransaction().add(frameLeft.getId(), loginFrag, "loginFrag").commit();
         }
