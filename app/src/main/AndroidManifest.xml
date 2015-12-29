@@ -10,13 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-        <activity
-            android:name="org.belichenko.a.login.LoginActivity"
-            android:screenOrientation="portrait"></activity>
-
-        <activity
-            android:name="org.belichenko.a.login.RegistreActivity"
-            android:screenOrientation="portrait"></activity>
 
         <activity android:name="org.belichenko.a.login.LogRegActivity">
             <intent-filter>

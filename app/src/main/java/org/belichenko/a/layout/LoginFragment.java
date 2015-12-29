@@ -30,10 +30,8 @@ import org.belichenko.a.utils.MyConstants;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment implements MyConstants {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-    // TODO: Rename and change types of parameters
     private int mOrientation;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
@@ -50,7 +48,6 @@ public class LoginFragment extends Fragment implements MyConstants {
      * @param param2 Parameter 2.
      * @return A new instance of fragment LoginFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static LoginFragment newInstance(int param1, String param2) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
@@ -138,9 +135,7 @@ public class LoginFragment extends Fragment implements MyConstants {
     }
 
     private void onRegistreClicked(View view) {
-
         mListener.onFragmentInteraction("");
-
     }
 
     @Override
@@ -171,7 +166,6 @@ public class LoginFragment extends Fragment implements MyConstants {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(String st);
     }
 }

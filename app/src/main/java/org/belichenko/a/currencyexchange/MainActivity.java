@@ -19,8 +19,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.belichenko.a.login.LogRegActivity;
 import org.belichenko.a.utils.MyConstants;
-import org.belichenko.a.login.LoginActivity;
 
 import java.util.ArrayList;
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants{
         String user = mPrefs.getString(USER_IS_LOGIN, null);
         if (user == null){
             // user not login go to login activity
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, LogRegActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }else{
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants{
         edit.apply();
 
         // user not login go to login activity
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, LogRegActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
