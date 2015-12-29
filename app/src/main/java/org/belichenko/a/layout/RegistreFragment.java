@@ -1,15 +1,12 @@
-package layout;
+package org.belichenko.a.layout;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import org.belichenko.a.currencyexchange.R;
 import org.belichenko.a.utils.MyConstants;
@@ -17,22 +14,22 @@ import org.belichenko.a.utils.MyConstants;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LoginFragment.OnFragmentInteractionListener} interface
+ * {@link RegistreFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the {@link RegistreFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment implements MyConstants {
+public class RegistreFragment extends Fragment implements MyConstants{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     // TODO: Rename and change types of parameters
-    private int mOrientation;
+    private int mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    public LoginFragment() {
+    public RegistreFragment() {
         // Required empty public constructor
     }
 
@@ -42,11 +39,11 @@ public class LoginFragment extends Fragment implements MyConstants {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
+     * @return A new instance of fragment RegistreFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(int param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
+    public static RegistreFragment newInstance(int param1, String param2) {
+        RegistreFragment fragment = new RegistreFragment();
         Bundle args = new Bundle();
         args.putInt(ORIENTATION, param1);
         args.putString(ARG_PARAM2, param2);
@@ -58,7 +55,7 @@ public class LoginFragment extends Fragment implements MyConstants {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mOrientation = getArguments().getInt(ORIENTATION);
+            mParam1 = getArguments().getInt(ORIENTATION);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -67,15 +64,7 @@ public class LoginFragment extends Fragment implements MyConstants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
-        
-        if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-
-            TextView tx = (TextView) fragmentView.findViewById(R.id.textRegister);
-            RelativeLayout l = (RelativeLayout) tx.getParent();
-            l.removeView(tx);
-        }
-        return fragmentView;
+        return inflater.inflate(R.layout.fragment_registre, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

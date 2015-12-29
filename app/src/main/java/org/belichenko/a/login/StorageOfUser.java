@@ -1,12 +1,11 @@
 package org.belichenko.a.login;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.ArrayMap;
+import 	android.support.v4.util.ArrayMap;
 
 import com.google.gson.Gson;
 
-import org.belichenko.a.App;
+import org.belichenko.a.utils.App;
 import org.belichenko.a.utils.MyConstants;
 import org.belichenko.a.currencyexchange.R;
 
@@ -22,7 +21,6 @@ import java.util.Map;
 public class StorageOfUser implements MyConstants, Serializable{
     private static StorageOfUser ourInstance = new StorageOfUser();
     private ArrayMap<String, String> users = new ArrayMap<>();
-    private static App context = App.getInstance();
     private static SharedPreferences mPrefs;
 
     public static StorageOfUser getInstance() {
@@ -30,7 +28,7 @@ public class StorageOfUser implements MyConstants, Serializable{
     }
 
     private StorageOfUser() {
-        mPrefs = context.getSharedPreferences(MAIN_PREFERENCE, Context.MODE_PRIVATE);
+        mPrefs = App.getAppContext().getSharedPreferences(MAIN_PREFERENCE, App.getAppContext().MODE_PRIVATE);
         fillUsers();
     }
 

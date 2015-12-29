@@ -66,7 +66,6 @@
         android:layout_alignParentBottom = "true"
         android:text="@string/link_registre"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColorLink="@android:color/white"
         android:textIsSelectable="false"
         android:gravity="center_horizontal"
         android:layout_alignParentRight="false"
