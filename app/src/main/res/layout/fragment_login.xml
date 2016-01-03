@@ -7,69 +7,51 @@
 
     <TextView
         android:id="@+id/textLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/textViewStyle"
         android:layout_alignParentTop = "true"
         android:text="@string/authorization"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
         android:layout_marginBottom="4dp" />
 
     <EditText
         android:id="@+id/editLoginName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/textViewStyle"
         android:layout_below = "@+id/textLogin"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@string/empty_string"
-        android:gravity="center_horizontal"
         android:layout_marginBottom="4dp"
-        android:hint="name" />
+        android:hint="@string/enter_name" />
 
     <EditText
         android:id="@+id/editLoginPass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/textViewStyle"
         android:layout_below = "@+id/editLoginName"
         android:ems="10"
         android:inputType="textPassword"
-        android:gravity="center_horizontal"
         android:layout_marginBottom="4dp"
-        android:hint="password" />
+        android:hint="@string/text_pass" />
 
     <TextView
         android:id="@+id/textLoginLink"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        style="@style/textViewStyle"
         android:clickable="true"
         android:enabled="true"
         android:focusable="true"
         android:layout_below = "@+id/editLoginPass"
         android:text="@string/loginLink"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:gravity="center_horizontal"
         android:layout_marginBottom="4dp" />
 
     <TextView
         android:id="@+id/textRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        style="@style/textViewStyle"
         android:clickable="true"
-        android:contentDescription="@string/link_registre"
         android:enabled="true"
         android:focusable="true"
-        android:linksClickable="false"
         android:layout_alignParentBottom = "true"
         android:text="@string/link_registre"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textIsSelectable="false"
-        android:gravity="center_horizontal"
-        android:layout_alignParentRight="false"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp" />
+        android:layout_marginTop="12dp" />
 
 </RelativeLayout>

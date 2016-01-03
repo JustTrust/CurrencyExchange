@@ -2,6 +2,8 @@ package org.belichenko.a.login;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,14 +12,17 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import org.belichenko.a.currencyexchange.MainActivity;
 import org.belichenko.a.currencyexchange.R;
 import org.belichenko.a.layout.LoginFragment;
 import org.belichenko.a.layout.RegistreFragment;
+import org.belichenko.a.utils.MyConstants;
 import org.belichenko.a.utils.Utils;
 
 
 
-public class LogRegActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener {
+public class LogRegActivity extends AppCompatActivity implements MyConstants,
+        LoginFragment.OnFragmentInteractionListener {
 
     // set unique id for fragments
     protected void setViewId(View view) {
@@ -34,41 +39,50 @@ public class LogRegActivity extends AppCompatActivity implements LoginFragment.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_reg);
+        SharedPreferences mPrefs = getSharedPreferences(MAIN_PREFERENCE, MODE_PRIVATE);
 
+        // check in preferences a user is login
+        String user = mPrefs.getString(USER_IS_LOGIN, null);
+        if (user != null) {
+            // go to main activity
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
         buildViewByOrientation();
     }
 
     private void buildViewByOrientation() {
 
-        LinearLayout myLayout = (LinearLayout) findViewById(R.id.frame_fragment);
-        LinearLayout.LayoutParams lparams = new LinearLayout
-                .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             // add two frames and two fragments
-            LoginFragment loginFrag = LoginFragment.newInstance(orientation, "");
-            RegistreFragment regFrag = RegistreFragment.newInstance(orientation, "");
+//            FrameLayout frameLeft = new FrameLayout(this);
+//            setViewId(frameLeft);
+//            FrameLayout frameRight = new FrameLayout(this);
+//            setViewId(frameRight);
+//
+//            myLayout.addView(frameLeft, lparams);
+//            myLayout.addView(frameRight, lparams);
+//
+//            LoginFragment loginFrag = LoginFragment.newInstance(orientation, "");
+//            RegistreFragment regFrag = RegistreFragment.newInstance(orientation, "");
+//
+//            FragmentTransaction frManager = getFragmentManager().beginTransaction();
+//            frManager.add(frameLeft.getId(), loginFrag, "loginFrag");
+//            frManager.add(frameRight.getId(), regFrag, "regFrag");
+//            frManager.commit();
 
-            FrameLayout frameLeft = new FrameLayout(this);
-            setViewId(frameLeft);
-            FrameLayout frameRight = new FrameLayout(this);
-            setViewId(frameRight);
 
-            myLayout.addView(frameLeft, lparams);
-            myLayout.addView(frameRight, lparams);
-
-            FragmentTransaction frManager = getFragmentManager().beginTransaction();
-            frManager.add(frameLeft.getId(), loginFrag, "loginFrag");
-            frManager.add(frameRight.getId(), regFrag, "regFrag");
-            frManager.commit();
         } else {
-            LoginFragment loginFrag = LoginFragment.newInstance(orientation, "");
-            // portrait, add just one fragment
-            FragmentTransaction frManager = getFragmentManager().beginTransaction();
-            frManager.add(myLayout.getId(), loginFrag, "loginFrag");
-            frManager.addToBackStack(null);
-            frManager.commit();
+//            FrameLayout myLayout = (FrameLayout) findViewById(R.id.frame_fragment);
+//
+//            LoginFragment loginFrag = LoginFragment.newInstance(orientation, "");
+//            // portrait, add just one fragment
+//            FragmentTransaction frManager = getFragmentManager().beginTransaction();
+//            frManager.add(myLayout.getId(), loginFrag, "loginFrag");
+//            //frManager.addToBackStack(null);
+//            frManager.commit();
         }
     }
 
@@ -81,7 +95,7 @@ public class LogRegActivity extends AppCompatActivity implements LoginFragment.O
         if (loginFrag.isAdded()){
             FragmentTransaction frManager = getFragmentManager().beginTransaction();
             frManager.replace(myLayout.getId(), regFrag, "regFrag");
-            frManager.addToBackStack(null);
+            //frManager.addToBackStack(null);
             frManager.commit();
         }
 

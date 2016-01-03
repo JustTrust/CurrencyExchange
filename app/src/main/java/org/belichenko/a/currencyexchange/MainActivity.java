@@ -288,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants{
         Intent intent = new Intent(this, LogRegActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
+        finish();
     }
 
 }
