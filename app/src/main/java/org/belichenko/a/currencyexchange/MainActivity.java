@@ -1,6 +1,7 @@
 package org.belichenko.a.currencyexchange;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.belichenko.a.login.LogRegActivity;
+import org.belichenko.a.utils.App;
 import org.belichenko.a.utils.MyConstants;
 
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants{
         setContentView(R.layout.activity_main);
 
         // check in preferences a user is login
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences mPrefs = this.getSharedPreferences(MAIN_PREFERENCE, MODE_PRIVATE);
         String user = mPrefs.getString(USER_IS_LOGIN, null);
         if (user == null){
             // user not login go to login activity
@@ -279,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants{
     public void logoutUser(View view){
 
         // logout user from preferences
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences mPrefs = this.getSharedPreferences(MAIN_PREFERENCE, MODE_PRIVATE);
         SharedPreferences.Editor edit = mPrefs.edit();
         edit.putString(USER_IS_LOGIN, null);
         edit.apply();

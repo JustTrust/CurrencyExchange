@@ -1,5 +1,6 @@
 package org.belichenko.a.login;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import 	android.support.v4.util.ArrayMap;
 
@@ -28,7 +29,7 @@ public class StorageOfUser implements MyConstants, Serializable{
     }
 
     private StorageOfUser() {
-        mPrefs = App.getAppContext().getSharedPreferences(MAIN_PREFERENCE, App.getAppContext().MODE_PRIVATE);
+        mPrefs = App.getAppContext().getSharedPreferences(MAIN_PREFERENCE, Context.MODE_PRIVATE);
         fillUsers();
     }
 
@@ -40,13 +41,12 @@ public class StorageOfUser implements MyConstants, Serializable{
         String hashPass = getSha1Hash(pass);
         if (hashPass != null) {
             users.put(name, hashPass);
-
-            // TODO: 22.12.2015 check json
+            // save new user in preferences
             Gson json = new Gson();
             String jString = json.toJson(users);
 
             SharedPreferences.Editor edit = mPrefs.edit();
-            edit.putString(STORAGE_OF_USERS, users.toString());
+            edit.putString(STORAGE_OF_USERS, jString);
             edit.putString(USER_IS_LOGIN, name);
             edit.apply();
 
@@ -119,13 +119,9 @@ public class StorageOfUser implements MyConstants, Serializable{
 
         if ((usersString != null) && (usersString.length() > 0)) {
             users.clear();
-            String[] keyValue = usersString.split(";");
-            for (String elemnt:keyValue) {
-                if (elemnt.length()>0){
-                    String[] s = elemnt.split("=");
-                    users.put(s[0],s[1]);
-                }
-            }
+
+            Gson json = new Gson();
+            users = json.fromJson(usersString, users.getClass());
         }
     }
 }

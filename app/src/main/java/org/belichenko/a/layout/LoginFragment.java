@@ -74,8 +74,8 @@ public class LoginFragment extends Fragment implements MyConstants {
         TextView txReg = (TextView) fragmentView.findViewById(R.id.textRegister);
         // if landscape orientation Reg button don't need
         if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            RelativeLayout l = (RelativeLayout) txReg.getParent();
-//            l.removeView(txReg);
+            RelativeLayout l = (RelativeLayout) txReg.getParent();
+            l.removeView(txReg);
         }
         // on Registre listener
         txReg.setOnClickListener(new View.OnClickListener() {

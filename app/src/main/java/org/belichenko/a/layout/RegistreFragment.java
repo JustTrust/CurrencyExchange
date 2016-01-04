@@ -72,7 +72,7 @@ public class RegistreFragment extends Fragment implements MyConstants{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View fragmentView = inflater.inflate(R.layout.fragment_registre, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_registre, container, false);
         // on Save listener
         TextView txSave = (TextView) fragmentView.findViewById(R.id.text_save);
         txSave.setOnClickListener(new View.OnClickListener() {
