@@ -3,7 +3,7 @@ package org.belichenko.a.utils;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by Админ on 24.12.2015.
+ * Utils class
  */
 public class Utils {
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);

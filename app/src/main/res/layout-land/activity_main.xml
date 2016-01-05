@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:id="@+id/firstLayout">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:inputType="number|numberSigned|numberDecimal"
+            android:ems="10"
+            android:id="@+id/money_value"
+            android:layout_weight="0.3"
+            android:text="0"
+            android:textAlignment="viewEnd" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:id="@+id/currency_1"
+            android:layout_weight="0.2"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textAlignment="center" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="="
+            android:id="@+id/textView2"
+            android:layout_weight="0.1"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text= " "
+            android:id="@+id/currency_2"
+            android:layout_weight="0.4"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/listLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/firstLayout"
+        android:weightSum="1">
+
+        <Spinner
+            android:id="@+id/bank_spinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"/>
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/buysell_spinner"
+            android:layout_weight="0.3"
+            android:layout_gravity="end"
+            android:textAlignment="center" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/logout"
+            android:id="@+id/textLoguot"
+            android:layout_gravity="center_vertical|right"
+            android:layout_weight="0.3"
+            android:clickable="true"
+            android:onClick="logoutUser"
+            android:enabled="true"
+            android:textColorHighlight="@color/colorAccent"
+            android:gravity="right" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/listLayout"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ListView
+            android:id="@+id/listOfCurrency"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.9"
+            android:choiceMode="singleChoice" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
