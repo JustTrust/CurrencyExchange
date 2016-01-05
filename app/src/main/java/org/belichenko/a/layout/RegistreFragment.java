@@ -34,7 +34,6 @@ public class RegistreFragment extends Fragment implements MyConstants{
 
     // TODO: Rename and change types of parameters
     private int mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -47,14 +46,12 @@ public class RegistreFragment extends Fragment implements MyConstants{
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment RegistreFragment.
      */
-    public static RegistreFragment newInstance(int param1, String param2) {
+    public static RegistreFragment newInstance(int param1) {
         RegistreFragment fragment = new RegistreFragment();
         Bundle args = new Bundle();
         args.putInt(ORIENTATION, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,7 +61,6 @@ public class RegistreFragment extends Fragment implements MyConstants{
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getInt(ORIENTATION);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -85,9 +81,19 @@ public class RegistreFragment extends Fragment implements MyConstants{
     }
 
     private void onSaveClicked(View fragmentView) {
-        EditText editName = (EditText) getView().findViewById(R.id.editName);
-        EditText editPass = (EditText) getView().findViewById(R.id.edit_pass);
-        EditText editRepeatPass = (EditText) getView().findViewById(R.id.edit_rewrite_pass);
+
+        EditText editName ;
+        EditText editPass ;
+        EditText editRepeatPass ;
+
+        try{
+        editName = (EditText) getView().findViewById(R.id.editName);
+        editPass = (EditText) getView().findViewById(R.id.edit_pass);
+        editRepeatPass = (EditText) getView().findViewById(R.id.edit_rewrite_pass);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return;
+        }
 
         String name = editName.getText().toString();
         String pass = editPass.getText().toString();

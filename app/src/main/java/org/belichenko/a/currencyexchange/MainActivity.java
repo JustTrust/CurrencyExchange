@@ -1,11 +1,9 @@
 package org.belichenko.a.currencyexchange;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.belichenko.a.login.LogRegActivity;
-import org.belichenko.a.utils.App;
 import org.belichenko.a.utils.MyConstants;
 
 import java.util.ArrayList;

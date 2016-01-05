@@ -21,6 +21,7 @@ import org.belichenko.a.login.StorageOfUser;
 import org.belichenko.a.utils.App;
 import org.belichenko.a.utils.MyConstants;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -33,7 +34,6 @@ public class LoginFragment extends Fragment implements MyConstants {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private int mOrientation;
-    private String mParam2;
     private OnFragmentInteractionListener mListener;
 
     public LoginFragment() {
@@ -45,14 +45,12 @@ public class LoginFragment extends Fragment implements MyConstants {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment LoginFragment.
      */
-    public static LoginFragment newInstance(int param1, String param2) {
+    public static LoginFragment newInstance(int param1) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
         args.putInt(ORIENTATION, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +60,6 @@ public class LoginFragment extends Fragment implements MyConstants {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mOrientation = getArguments().getInt(ORIENTATION);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -93,25 +90,39 @@ public class LoginFragment extends Fragment implements MyConstants {
             }
         });
 
+        if (savedInstanceState != null) {
+            EditText editName = (EditText) fragmentView.findViewById(R.id.editLoginName);
+            EditText editPass = (EditText) fragmentView.findViewById(R.id.editLoginPass);
+
+            editName.setText(savedInstanceState.getString("editLoginName"));
+            editPass.setText(savedInstanceState.getString("editLoginPass"));
+        }
         return fragmentView;
     }
 
     private void onLoginClicked(View view) {
 
-        EditText editName = (EditText) getView().findViewById(R.id.editLoginName);
-        EditText editPass = (EditText) getView().findViewById(R.id.editLoginPass);
+        EditText editName;
+        EditText editPass;
 
+        try {
+            editName = (EditText) getView().findViewById(R.id.editLoginName);
+            editPass = (EditText) getView().findViewById(R.id.editLoginPass);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return;
+        }
         StorageOfUser storageOfUser = StorageOfUser.getInstance();
 
         String name = editName.getText().toString();
         String pass = editPass.getText().toString();
 
         if (name.isEmpty()) {
-            Toast.makeText(this.getActivity(), getString(R.string.notValidName), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getActivity().getBaseContext(), R.string.notValidName, Toast.LENGTH_LONG).show();
             return;
         }
         if (pass.isEmpty()) {
-            Toast.makeText(this.getActivity(), getString(R.string.notValidPass), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getActivity().getApplicationContext(), R.string.notValidPass, Toast.LENGTH_LONG).show();
             return;
         }
         if (storageOfUser.findUser(name, pass)) {
@@ -129,8 +140,8 @@ public class LoginFragment extends Fragment implements MyConstants {
             startActivity(intent);
             getActivity().finish();
         } else {
-            Toast.makeText(this.getActivity(), getString(R.string.wrongLogin), Toast.LENGTH_SHORT).show();
             editPass.setText("");
+            Toast.makeText(this.getActivity(), R.string.wrongLogin, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -167,5 +178,39 @@ public class LoginFragment extends Fragment implements MyConstants {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String st);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        try {
+            EditText editName = (EditText) getView().findViewById(R.id.editLoginName);
+            EditText editPass = (EditText) getView().findViewById(R.id.editLoginPass);
+
+            String name = editName.getText().toString();
+            String pass = editPass.getText().toString();
+
+            outState.putString("editLoginName", name);
+            outState.putString("editLoginPass", pass);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            try {
+                EditText editName = (EditText) getView().findViewById(R.id.editLoginName);
+                EditText editPass = (EditText) getView().findViewById(R.id.editLoginPass);
+
+                editName.setText(savedInstanceState.getString("editLoginName"));
+                editPass.setText(savedInstanceState.getString("editLoginPass"));
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

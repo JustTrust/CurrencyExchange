@@ -8,12 +8,12 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import org.belichenko.a.currencyexchange.MainActivity;
-import org.belichenko.a.currencyexchange.R;
 import org.belichenko.a.layout.LoginFragment;
 import org.belichenko.a.layout.RegistreFragment;
 import org.belichenko.a.utils.MyConstants;
@@ -22,6 +22,8 @@ import org.belichenko.a.utils.Utils;
 
 public class LogRegActivity extends AppCompatActivity implements MyConstants,
         LoginFragment.OnFragmentInteractionListener {
+
+    private int frameId;
 
     // set unique id for fragments
     protected void setViewId(View view) {
@@ -37,7 +39,7 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("Orientation", "Create " + this.getLocalClassName());
         SharedPreferences mPrefs = this.getSharedPreferences(MAIN_PREFERENCE, MODE_PRIVATE);
         String user = mPrefs.getString(USER_IS_LOGIN, null);
         if (user != null) {
@@ -47,22 +49,30 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
             startActivity(intent);
             this.finish();
         }
-        setContentView(R.layout.activity_log_reg);
+        // create LinearLayout
+        LinearLayout linLayout = new LinearLayout(this);
+        linLayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams linLayoutParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT, 1f);
 
-        buildViewByOrientation();
+        // set linLayout root view
+        setViewId(linLayout);
+        frameId = linLayout.getId();
+        setContentView(linLayout, linLayoutParam);
+
+        buildViewByOrientation(linLayout);
     }
 
-    private void buildViewByOrientation() {
+    private void buildViewByOrientation(LinearLayout myLayout) {
 
-        LinearLayout myLayout = (LinearLayout) findViewById(R.id.frame_fragment);
         LinearLayout.LayoutParams lparams = new LinearLayout
                 .LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 0.5f);
-
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.d("AddFragments", "orientation = LANDSCAPE");
             // add two frames and two fragments
-            LoginFragment loginFrag = LoginFragment.newInstance(orientation, "");
-            RegistreFragment regFrag = RegistreFragment.newInstance(orientation, "");
+            LoginFragment loginFrag = LoginFragment.newInstance(orientation);
+            RegistreFragment regFrag = RegistreFragment.newInstance(orientation);
 
             FrameLayout frameLeft = new FrameLayout(this);
             setViewId(frameLeft);
@@ -77,26 +87,41 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
             frManager.add(frameRight.getId(), regFrag, "regFrag");
             frManager.commit();
         } else {
-            LoginFragment loginFrag = LoginFragment.newInstance(orientation, "");
+            Log.d("AddFragments", "orientation = PORTRAIT");
+            LoginFragment loginFrag = LoginFragment.newInstance(orientation);
             // portrait, add just one fragment
             FragmentTransaction frManager = getFragmentManager().beginTransaction();
             frManager.add(myLayout.getId(), loginFrag, "loginFrag");
-            //frManager.addToBackStack(null);
+            // TODO: 04.01.2016 Back stack doesn't work
+            frManager.addToBackStack(null);
             frManager.commit();
         }
     }
 
     @Override
     public void onFragmentInteraction(String st) {
+        // replace Login fragment by Register
         int orientation = getResources().getConfiguration().orientation;
-        RegistreFragment regFrag = RegistreFragment.newInstance(orientation, "");
-        LinearLayout myLayout = (LinearLayout) findViewById(R.id.frame_fragment);
-        Fragment loginFrag = getFragmentManager().findFragmentByTag("loginFrag");
-        if (loginFrag.isAdded()) {
-            FragmentTransaction frManager = getFragmentManager().beginTransaction();
-            frManager.replace(myLayout.getId(), regFrag, "regFrag");
-            frManager.addToBackStack(null);
-            frManager.commit();
+        RegistreFragment regFrag = RegistreFragment.newInstance(orientation);
+        if (frameId > 0) {
+            LinearLayout myLayout = (LinearLayout) findViewById(frameId);
+            Fragment loginFrag = getFragmentManager().findFragmentByTag("loginFrag");
+            if (loginFrag.isAdded()) {
+                FragmentTransaction frManager = getFragmentManager().beginTransaction();
+                frManager.replace(myLayout.getId(), regFrag, "regFrag");
+                frManager.addToBackStack(null);
+                frManager.commit();
+            }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }
