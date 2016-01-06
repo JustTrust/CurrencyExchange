@@ -2,7 +2,7 @@ package org.belichenko.a.login;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import 	android.support.v4.util.ArrayMap;
+import android.support.v4.util.ArrayMap;
 
 import com.google.gson.Gson;
 
@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Contains list of users and passwords
  */
-public class StorageOfUser implements MyConstants, Serializable{
+public class StorageOfUser implements MyConstants, Serializable {
     private static StorageOfUser ourInstance = new StorageOfUser();
     private ArrayMap<String, String> users = new ArrayMap<>();
     private static SharedPreferences mPrefs;
@@ -108,7 +108,7 @@ public class StorageOfUser implements MyConstants, Serializable{
         for (Map.Entry<String, String> entry : users.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            result.append(key + "=" + value + ";");
+            result.append(key).append("=").append(value).append(";");
         }
         return result.toString();
     }

@@ -24,6 +24,8 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
         LoginFragment.OnFragmentInteractionListener {
 
     private int frameId;
+    private LoginFragment loginFrag = LoginFragment.newInstance();
+    private RegistreFragment regFrag = RegistreFragment.newInstance();
 
     // set unique id for fragments
     protected void setViewId(View view) {
@@ -45,7 +47,6 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
         if (user != null) {
             // start main activity if we have name
             Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             this.finish();
         }
@@ -71,9 +72,6 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Log.d("AddFragments", "orientation = LANDSCAPE");
             // add two frames and two fragments
-            LoginFragment loginFrag = LoginFragment.newInstance(orientation);
-            RegistreFragment regFrag = RegistreFragment.newInstance(orientation);
-
             FrameLayout frameLeft = new FrameLayout(this);
             setViewId(frameLeft);
             FrameLayout frameRight = new FrameLayout(this);
@@ -88,7 +86,6 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
             frManager.commit();
         } else {
             Log.d("AddFragments", "orientation = PORTRAIT");
-            LoginFragment loginFrag = LoginFragment.newInstance(orientation);
             // portrait, add just one fragment
             FragmentTransaction frManager = getFragmentManager().beginTransaction();
             frManager.add(myLayout.getId(), loginFrag, "loginFrag");
@@ -102,7 +99,6 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
     public void onFragmentInteraction(String st) {
         // replace Login fragment by Register
         int orientation = getResources().getConfiguration().orientation;
-        RegistreFragment regFrag = RegistreFragment.newInstance(orientation);
         if (frameId > 0) {
             LinearLayout myLayout = (LinearLayout) findViewById(frameId);
             Fragment loginFrag = getFragmentManager().findFragmentByTag("loginFrag");
@@ -123,5 +119,11 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getFragmentManager().popBackStack();
     }
 }

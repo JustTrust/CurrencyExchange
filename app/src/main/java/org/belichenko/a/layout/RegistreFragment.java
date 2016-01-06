@@ -1,9 +1,7 @@
 package org.belichenko.a.layout;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,20 +20,15 @@ import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RegistreFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link RegistreFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RegistreFragment extends Fragment implements MyConstants{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class RegistreFragment extends Fragment implements MyConstants {
 
-    // TODO: Rename and change types of parameters
-    private int mParam1;
-
-    private OnFragmentInteractionListener mListener;
+    private TextView txSave;
+    private EditText editName;
+    private EditText editPass;
+    private EditText editRepeatPass;
 
     public RegistreFragment() {
         // Required empty public constructor
@@ -44,24 +37,14 @@ public class RegistreFragment extends Fragment implements MyConstants{
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment RegistreFragment.
      */
-    public static RegistreFragment newInstance(int param1) {
-        RegistreFragment fragment = new RegistreFragment();
-        Bundle args = new Bundle();
-        args.putInt(ORIENTATION, param1);
-        fragment.setArguments(args);
-        return fragment;
+    public static RegistreFragment newInstance() {
+        return new RegistreFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getInt(ORIENTATION);
-        }
     }
 
     @Override
@@ -70,30 +53,22 @@ public class RegistreFragment extends Fragment implements MyConstants{
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_registre, container, false);
         // on Save listener
-        TextView txSave = (TextView) fragmentView.findViewById(R.id.text_save);
+        txSave = (TextView) fragmentView.findViewById(R.id.text_save);
         txSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View fragmentView) {
                 onSaveClicked(fragmentView);
             }
         });
+
+        editName = (EditText) fragmentView.findViewById(R.id.editName);
+        editPass = (EditText) fragmentView.findViewById(R.id.edit_pass);
+        editRepeatPass = (EditText) fragmentView.findViewById(R.id.edit_rewrite_pass);
+
         return fragmentView;
     }
 
     private void onSaveClicked(View fragmentView) {
-
-        EditText editName ;
-        EditText editPass ;
-        EditText editRepeatPass ;
-
-        try{
-        editName = (EditText) getView().findViewById(R.id.editName);
-        editPass = (EditText) getView().findViewById(R.id.edit_pass);
-        editRepeatPass = (EditText) getView().findViewById(R.id.edit_rewrite_pass);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return;
-        }
 
         String name = editName.getText().toString();
         String pass = editPass.getText().toString();
@@ -125,7 +100,6 @@ public class RegistreFragment extends Fragment implements MyConstants{
             startActivity(intent);
             this.getActivity().finish();
         }
-
     }
 
     // check validation passwords and username
@@ -133,44 +107,5 @@ public class RegistreFragment extends Fragment implements MyConstants{
         Pattern pattern = Pattern.compile(patternWord);
         Matcher matcher = pattern.matcher(word);
         return matcher.matches();
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-//        if (activity instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } else {
-//            throw new RuntimeException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

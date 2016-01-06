@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,12 @@ import org.belichenko.a.utils.MyConstants;
 public class LoginFragment extends Fragment implements MyConstants {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-    private int mOrientation;
     private OnFragmentInteractionListener mListener;
+
+    private TextView txReg;
+    private TextView txLogin;
+    private EditText editName;
+    private EditText editPass;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -43,24 +48,16 @@ public class LoginFragment extends Fragment implements MyConstants {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment LoginFragment.
      */
-    public static LoginFragment newInstance(int param1) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putInt(ORIENTATION, param1);
-        fragment.setArguments(args);
-        return fragment;
+    public static LoginFragment newInstance() {
+        LoginFragment fr = new LoginFragment();
+        Log.d("InstanceState", "have new instance=" + fr.toString());
+        return fr;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mOrientation = getArguments().getInt(ORIENTATION);
-        }
     }
 
     @Override
@@ -68,50 +65,44 @@ public class LoginFragment extends Fragment implements MyConstants {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
-        TextView txReg = (TextView) fragmentView.findViewById(R.id.textRegister);
-        // if landscape orientation Reg button don't need
-        if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+        txReg = (TextView) fragmentView.findViewById(R.id.textRegister);
+        // if landscape orientation then Reg button doesn't need
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             RelativeLayout l = (RelativeLayout) txReg.getParent();
             l.removeView(txReg);
+        } else {
+            // on Registre listener
+            txReg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View fragmentView) {
+                    onRegistreClicked();
+                }
+            });
         }
-        // on Registre listener
-        txReg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View fragmentView) {
-                onRegistreClicked(fragmentView);
-            }
-        });
         // on Login listener
-        TextView txLogin = (TextView) fragmentView.findViewById(R.id.textLoginLink);
+        txLogin = (TextView) fragmentView.findViewById(R.id.textLoginLink);
         txLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onLoginClicked(view);
+                onLoginClicked();
             }
         });
+        editName = (EditText) fragmentView.findViewById(R.id.editLoginName);
+        editPass = (EditText) fragmentView.findViewById(R.id.editLoginPass);
 
         if (savedInstanceState != null) {
-            EditText editName = (EditText) fragmentView.findViewById(R.id.editLoginName);
-            EditText editPass = (EditText) fragmentView.findViewById(R.id.editLoginPass);
+            Log.d("InstanceState", "fragment name=" + this.toString());
+            Log.d("InstanceState", "nameConst=" + EDIT_LOGIN_NAME);
+            Log.d("InstanceState", "passConst=" + EDIT_LOGIN_PASS);
 
-            editName.setText(savedInstanceState.getString("editLoginName"));
-            editPass.setText(savedInstanceState.getString("editLoginPass"));
+            editName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
+            editPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
         }
         return fragmentView;
     }
 
-    private void onLoginClicked(View view) {
-
-        EditText editName;
-        EditText editPass;
-
-        try {
-            editName = (EditText) getView().findViewById(R.id.editLoginName);
-            editPass = (EditText) getView().findViewById(R.id.editLoginPass);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return;
-        }
+    private void onLoginClicked() {
         StorageOfUser storageOfUser = StorageOfUser.getInstance();
 
         String name = editName.getText().toString();
@@ -145,7 +136,7 @@ public class LoginFragment extends Fragment implements MyConstants {
         }
     }
 
-    private void onRegistreClicked(View view) {
+    private void onRegistreClicked() {
         mListener.onFragmentInteraction("");
     }
 
@@ -171,10 +162,6 @@ public class LoginFragment extends Fragment implements MyConstants {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String st);
@@ -184,33 +171,20 @@ public class LoginFragment extends Fragment implements MyConstants {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        try {
-            EditText editName = (EditText) getView().findViewById(R.id.editLoginName);
-            EditText editPass = (EditText) getView().findViewById(R.id.editLoginPass);
+        String name = editName.getText().toString();
+        String pass = editPass.getText().toString();
 
-            String name = editName.getText().toString();
-            String pass = editPass.getText().toString();
-
-            outState.putString("editLoginName", name);
-            outState.putString("editLoginPass", pass);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        outState.putString(EDIT_LOGIN_NAME, name);
+        outState.putString(EDIT_LOGIN_PASS, pass);
     }
 
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            try {
-                EditText editName = (EditText) getView().findViewById(R.id.editLoginName);
-                EditText editPass = (EditText) getView().findViewById(R.id.editLoginPass);
 
-                editName.setText(savedInstanceState.getString("editLoginName"));
-                editPass.setText(savedInstanceState.getString("editLoginPass"));
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
+        if (savedInstanceState != null) {
+            editName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
+            editPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
         }
     }
 }
