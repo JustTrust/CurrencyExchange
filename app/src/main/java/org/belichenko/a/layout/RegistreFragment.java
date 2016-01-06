@@ -20,10 +20,12 @@ import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RegistreFragment#newInstance} factory method to
+ * Use the {@link RegistreFragment#returnInstance} factory method to
  * create an instance of this fragment.
  */
 public class RegistreFragment extends Fragment implements MyConstants {
+
+    private static RegistreFragment ourInstance = new RegistreFragment();
 
     private TextView txSave;
     private EditText editName;
@@ -38,8 +40,8 @@ public class RegistreFragment extends Fragment implements MyConstants {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      */
-    public static RegistreFragment newInstance() {
-        return new RegistreFragment();
+    public static RegistreFragment returnInstance() {
+        return ourInstance;
     }
 
     @Override
@@ -107,5 +109,26 @@ public class RegistreFragment extends Fragment implements MyConstants {
         Pattern pattern = Pattern.compile(patternWord);
         Matcher matcher = pattern.matcher(word);
         return matcher.matches();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        String name = editName.getText().toString();
+        String pass = editPass.getText().toString();
+
+        outState.putString(EDIT_LOGIN_NAME, name);
+        outState.putString(EDIT_LOGIN_PASS, pass);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            editName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
+            editPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
+        }
     }
 }

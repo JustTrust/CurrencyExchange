@@ -1,6 +1,7 @@
 package org.belichenko.a.login;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,8 +25,8 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
         LoginFragment.OnFragmentInteractionListener {
 
     private int frameId;
-    private LoginFragment loginFrag = LoginFragment.newInstance();
-    private RegistreFragment regFrag = RegistreFragment.newInstance();
+    private LoginFragment loginFrag = LoginFragment.returnInstance();
+    private RegistreFragment regFrag = RegistreFragment.returnInstance();
 
     // set unique id for fragments
     protected void setViewId(View view) {
@@ -123,7 +124,13 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        getFragmentManager().popBackStack();
+        FragmentManager fm = getFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            Log.i("MainActivity", "popping backstack");
+            fm.popBackStack();
+        } else {
+            Log.i("MainActivity", "nothing on backstack, calling super");
+            super.onBackPressed();
+        }
     }
 }

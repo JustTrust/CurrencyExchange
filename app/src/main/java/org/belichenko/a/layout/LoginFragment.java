@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +27,12 @@ import org.belichenko.a.utils.MyConstants;
  * Activities that contain this fragment must implement the
  * {@link LoginFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the {@link LoginFragment#returnInstance} factory method to
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment implements MyConstants {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
+    private static LoginFragment ourInstance = new LoginFragment();
     private OnFragmentInteractionListener mListener;
 
     private TextView txReg;
@@ -49,10 +48,8 @@ public class LoginFragment extends Fragment implements MyConstants {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      */
-    public static LoginFragment newInstance() {
-        LoginFragment fr = new LoginFragment();
-        Log.d("InstanceState", "have new instance=" + fr.toString());
-        return fr;
+    public static LoginFragment returnInstance() {
+        return ourInstance;
     }
 
     @Override
@@ -92,10 +89,6 @@ public class LoginFragment extends Fragment implements MyConstants {
         editPass = (EditText) fragmentView.findViewById(R.id.editLoginPass);
 
         if (savedInstanceState != null) {
-            Log.d("InstanceState", "fragment name=" + this.toString());
-            Log.d("InstanceState", "nameConst=" + EDIT_LOGIN_NAME);
-            Log.d("InstanceState", "passConst=" + EDIT_LOGIN_PASS);
-
             editName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
             editPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
         }
