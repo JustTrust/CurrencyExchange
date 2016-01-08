@@ -18,6 +18,10 @@ import org.belichenko.a.utils.MyConstants;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link RegistreFragment#returnInstance} factory method to
@@ -27,10 +31,14 @@ public class RegistreFragment extends Fragment implements MyConstants {
 
     private static RegistreFragment ourInstance = new RegistreFragment();
 
-    private TextView txSave;
-    private EditText editName;
-    private EditText editPass;
-    private EditText editRepeatPass;
+    @Bind(R.id.editName)
+    EditText editName;
+    @Bind(R.id.edit_pass)
+    EditText edit_pass;
+    @Bind(R.id.edit_rewrite_pass)
+    EditText edit_rewrite_pass;
+    @Bind(R.id.text_save)
+    TextView text_save;
 
     public RegistreFragment() {
         // Required empty public constructor
@@ -54,27 +62,17 @@ public class RegistreFragment extends Fragment implements MyConstants {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_registre, container, false);
-        // on Save listener
-        txSave = (TextView) fragmentView.findViewById(R.id.text_save);
-        txSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View fragmentView) {
-                onSaveClicked(fragmentView);
-            }
-        });
-
-        editName = (EditText) fragmentView.findViewById(R.id.editName);
-        editPass = (EditText) fragmentView.findViewById(R.id.edit_pass);
-        editRepeatPass = (EditText) fragmentView.findViewById(R.id.edit_rewrite_pass);
+        ButterKnife.bind(this, fragmentView);
 
         return fragmentView;
     }
 
-    private void onSaveClicked(View fragmentView) {
+    @OnClick(R.id.text_save)
+    protected void onSaveClicked(View fragmentView) {
 
         String name = editName.getText().toString();
-        String pass = editPass.getText().toString();
-        String repeatPass = editRepeatPass.getText().toString();
+        String pass = edit_pass.getText().toString();
+        String repeatPass = edit_rewrite_pass.getText().toString();
 
         if (name.isEmpty() | (!isStringValidate("^[a-zA-Z0-9_-]{5,20}$", name))) {
             Toast.makeText(this.getActivity(), getString(R.string.notValidName), Toast.LENGTH_SHORT).show();
@@ -116,7 +114,7 @@ public class RegistreFragment extends Fragment implements MyConstants {
         super.onSaveInstanceState(outState);
 
         String name = editName.getText().toString();
-        String pass = editPass.getText().toString();
+        String pass = edit_pass.getText().toString();
 
         outState.putString(EDIT_LOGIN_NAME, name);
         outState.putString(EDIT_LOGIN_PASS, pass);
@@ -128,7 +126,13 @@ public class RegistreFragment extends Fragment implements MyConstants {
 
         if (savedInstanceState != null) {
             editName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
-            editPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
+            edit_pass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }

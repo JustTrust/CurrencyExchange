@@ -90,8 +90,6 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
             // portrait, add just one fragment
             FragmentTransaction frManager = getFragmentManager().beginTransaction();
             frManager.add(myLayout.getId(), loginFrag, "loginFrag");
-            // TODO: 04.01.2016 Back stack doesn't work
-            frManager.addToBackStack(null);
             frManager.commit();
         }
     }
@@ -103,6 +101,7 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
         if (frameId > 0) {
             LinearLayout myLayout = (LinearLayout) findViewById(frameId);
             Fragment loginFrag = getFragmentManager().findFragmentByTag("loginFrag");
+           
             if (loginFrag.isAdded()) {
                 FragmentTransaction frManager = getFragmentManager().beginTransaction();
                 frManager.replace(myLayout.getId(), regFrag, "regFrag");
@@ -126,10 +125,10 @@ public class LogRegActivity extends AppCompatActivity implements MyConstants,
     public void onBackPressed() {
         FragmentManager fm = getFragmentManager();
         if (fm.getBackStackEntryCount() > 0) {
-            Log.i("MainActivity", "popping backstack");
+            Log.d("backstack", "popping backstack");
             fm.popBackStack();
         } else {
-            Log.i("MainActivity", "nothing on backstack, calling super");
+            Log.d("backstack", "nothing on backstack, calling super");
             super.onBackPressed();
         }
     }

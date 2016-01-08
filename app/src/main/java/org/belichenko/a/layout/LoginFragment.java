@@ -21,6 +21,7 @@ import org.belichenko.a.login.StorageOfUser;
 import org.belichenko.a.utils.App;
 import org.belichenko.a.utils.MyConstants;
 
+import butterknife.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,10 +36,16 @@ public class LoginFragment extends Fragment implements MyConstants {
     private static LoginFragment ourInstance = new LoginFragment();
     private OnFragmentInteractionListener mListener;
 
-    private TextView txReg;
-    private TextView txLogin;
-    private EditText editName;
-    private EditText editPass;
+    //Bind the Views of the fragment_login.xml file
+    @Bind(R.id.editLoginName)
+    EditText editLoginName;
+    @Bind(R.id.editLoginPass)
+    EditText editLoginPass;
+    @Bind(R.id.textLoginLink)
+    TextView textLoginLink;
+    @Bind(R.id.textRegister)
+    TextView textRegister;
+
 
     public LoginFragment() {
         // Required empty public constructor
@@ -62,44 +69,36 @@ public class LoginFragment extends Fragment implements MyConstants {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
-        txReg = (TextView) fragmentView.findViewById(R.id.textRegister);
+        ButterKnife.bind(this, fragmentView);
+
         // if landscape orientation then Reg button doesn't need
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            RelativeLayout l = (RelativeLayout) txReg.getParent();
-            l.removeView(txReg);
+            RelativeLayout l = (RelativeLayout) textRegister.getParent();
+            l.removeView(textRegister);
         } else {
             // on Registre listener
-            txReg.setOnClickListener(new View.OnClickListener() {
+            textRegister.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View fragmentView) {
                     onRegistreClicked();
                 }
             });
         }
-        // on Login listener
-        txLogin = (TextView) fragmentView.findViewById(R.id.textLoginLink);
-        txLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onLoginClicked();
-            }
-        });
-        editName = (EditText) fragmentView.findViewById(R.id.editLoginName);
-        editPass = (EditText) fragmentView.findViewById(R.id.editLoginPass);
 
         if (savedInstanceState != null) {
-            editName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
-            editPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
+            editLoginName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
+            editLoginPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
         }
         return fragmentView;
     }
 
-    private void onLoginClicked() {
+    @OnClick(R.id.textLoginLink)
+    protected void onLoginClicked() {
         StorageOfUser storageOfUser = StorageOfUser.getInstance();
 
-        String name = editName.getText().toString();
-        String pass = editPass.getText().toString();
+        String name = editLoginName.getText().toString();
+        String pass = editLoginPass.getText().toString();
 
         if (name.isEmpty()) {
             Toast.makeText(this.getActivity().getBaseContext(), R.string.notValidName, Toast.LENGTH_LONG).show();
@@ -117,14 +116,14 @@ public class LoginFragment extends Fragment implements MyConstants {
             edit.putString(USER_IS_LOGIN, name);
             edit.apply();
             // clear fields
-            editName.setText("");
-            editPass.setText("");
+            editLoginName.setText("");
+            editLoginPass.setText("");
             // go to main activity
             Intent intent = new Intent(this.getActivity(), MainActivity.class);
             startActivity(intent);
             getActivity().finish();
         } else {
-            editPass.setText("");
+            editLoginPass.setText("");
             Toast.makeText(this.getActivity(), R.string.wrongLogin, Toast.LENGTH_LONG).show();
         }
     }
@@ -163,12 +162,12 @@ public class LoginFragment extends Fragment implements MyConstants {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        String name = editName.getText().toString();
-        String pass = editPass.getText().toString();
-
-        outState.putString(EDIT_LOGIN_NAME, name);
-        outState.putString(EDIT_LOGIN_PASS, pass);
+        if (editLoginName != null) {
+            outState.putString(EDIT_LOGIN_NAME, editLoginName.getText().toString());
+        }
+        if (editLoginPass != null) {
+            outState.putString(EDIT_LOGIN_PASS, editLoginPass.getText().toString());
+        }
     }
 
     @Override
@@ -176,8 +175,14 @@ public class LoginFragment extends Fragment implements MyConstants {
         super.onViewStateRestored(savedInstanceState);
 
         if (savedInstanceState != null) {
-            editName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
-            editPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
+            editLoginName.setText(savedInstanceState.getString(EDIT_LOGIN_NAME));
+            editLoginPass.setText(savedInstanceState.getString(EDIT_LOGIN_PASS));
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }
