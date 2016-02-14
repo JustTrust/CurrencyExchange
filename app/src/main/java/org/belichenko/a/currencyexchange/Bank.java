@@ -8,6 +8,11 @@ import java.util.ArrayList;
 class Bank {
     private String name;
     private String mfo;
+    private String phone;
+    private String site;
+    private String address;
+    private String id;
+
     private ArrayList<MyCurrency> listOfCurrency;
 
     public String getName() {

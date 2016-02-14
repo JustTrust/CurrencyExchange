@@ -7,19 +7,19 @@ import java.util.Random;
  */
 class MyCurrency {
     private String name;
-    private String code;
+    private String id;
     private float buyCource;
     private float sellCource;
 
-    public MyCurrency(String name, String code) {
+    public MyCurrency(String name, String id) {
         this.name = String.valueOf(name).toUpperCase();
-        this.code = code;
+        this.id = id;
     }
 
-    public MyCurrency(String name, String code, float middleCource) {
+    public MyCurrency(String name, String id, float middleCource) {
 
         this.name = String.valueOf(name).toUpperCase();
-        this.code = code;
+        this.id = id;
 
         // pseudo generate buy and sell courses by the middle course
         float delta = new Random().nextFloat();
@@ -32,9 +32,9 @@ class MyCurrency {
         }
     }
 
-    public MyCurrency(String name, String code, float buyCource, float sellCource) {
+    public MyCurrency(String name, String id, float buyCource, float sellCource) {
 
-        this(name, code);
+        this(name, id);
         this.buyCource = buyCource;
         this.sellCource = sellCource;
     }
@@ -48,12 +48,12 @@ class MyCurrency {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
+    public String getId() {
+        return id;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public float getBuyCource() {

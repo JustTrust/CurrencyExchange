@@ -1,12 +1,12 @@
 package org.belichenko.a.layout;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +21,9 @@ import org.belichenko.a.login.StorageOfUser;
 import org.belichenko.a.utils.App;
 import org.belichenko.a.utils.MyConstants;
 
-import butterknife.*;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
