@@ -12,4 +12,5 @@ public interface MyConstants {
 
     String EDIT_LOGIN_NAME = "org.belichenko.currencyExchange.editLoginName";
     String EDIT_LOGIN_PASS = "org.belichenko.currencyExchange.editLoginPass";
+    String TAG = "currencyExchange";
 }

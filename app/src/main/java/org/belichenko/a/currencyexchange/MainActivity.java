@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,12 +17,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.belichenko.a.data_structure.Courses;
+import org.belichenko.a.data_structure.CurrencyData;
+import org.belichenko.a.data_structure.Organizations;
+import org.belichenko.a.data_structure.Retrofit;
 import org.belichenko.a.login.LogRegActivity;
 import org.belichenko.a.utils.MyConstants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import butterknife.*;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
+import butterknife.OnItemLongClick;
+import butterknife.OnTextChanged;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity implements MyConstants {
 
@@ -44,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     TextView textLoguot;
 
 
-    private ArrayList<Bank> listOfBanks = new ArrayList<>();
+    private ArrayList<Organizations> listOfBanks = new ArrayList<>();
     private MyCurrency currentCurrency;
 
     @Override
@@ -72,19 +87,17 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
             setTitle(title + ": " + user);
         }
 
-        // fill the banks list
-        fillBankList();
 
         // set banks spinner
-        ArrayAdapter<Bank> adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listOfBanks);
+        ArrayAdapter<Organizations> adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listOfBanks);
         bank_spinner.setAdapter(adapterBank);
 
         bank_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Bank selectedBank = (Bank) parent.getItemAtPosition(position);
+                Organizations selectedBank = (Organizations) parent.getItemAtPosition(position);
                 if (selectedBank != null) {
-                    updateCurrencyList(selectedBank.getListOfCurrency());
+                    updateCurrencyList(selectedBank.currencies);
                 }
             }
 
@@ -115,6 +128,20 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
             }
         });
 
+    }
+
+    private void updateDataFromSite() {
+        Retrofit.getCurrencyData(new Callback<CurrencyData>() {
+            @Override
+            public void success(CurrencyData currencyData, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "failure() called with: " + "error = [" + error + "]");
+            }
+        });
     }
 
     private void setNewCourse(final MyCurrency currency) {
@@ -166,9 +193,17 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     /**
      * Fill List view of currency from array list
      *
-     * @param currencyList array list
+     * @param currency array list
      */
-    private void updateCurrencyList(ArrayList<MyCurrency> currencyList) {
+    private void updateCurrencyList(HashMap<String, Courses> currency) {
+        Log.d(TAG, "updateCurrencyList() called with: " + "currency = [" + currency + "]");
+        ArrayList<MyCurrency> currencyList = new ArrayList<>();
+
+        for (Map.Entry<String, Courses> entry : currency.entrySet()) {
+            currencyList.add(new MyCurrency(entry.getKey(),
+                    stringToFloat(entry.getValue().ask),
+                    stringToFloat(entry.getValue().bid)));
+        }
         ArrayAdapter<MyCurrency> adapterCurrency = new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_single_choice, currencyList);
 
@@ -178,6 +213,16 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
         listOfCurrency.setItemChecked(0, true);
         listOfCurrency.setSelection(0);
         listOfCurrency.performItemClick(listOfCurrency, 0, 0);
+    }
+
+    private float stringToFloat(String st) {
+        float result = 0f;
+        try {
+            result = Float.parseFloat(st);
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -264,26 +309,4 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
         buySellCurrency();
     }
 
-    // fill the bank list with default values
-    private void fillBankList() {
-        for (DefaultBanks defBank : DefaultBanks.values()) {
-            Bank newBank = new Bank(defBank.getName(), defBank.getMfo());
-
-            // fill the currency list
-            ArrayList<MyCurrency> listOfCurrency = new ArrayList<>();
-            for (DefaultCurrency defCurrency : DefaultCurrency.values()) {
-                // UAH don't add in list, its course always is 1
-                if (defCurrency != DefaultCurrency.UAH) {
-                    MyCurrency newCurrency = new MyCurrency(
-                            defCurrency.name(),
-                            defCurrency.getCode(),
-                            defCurrency.getMiddleCourse()
-                    );
-                    listOfCurrency.add(newCurrency);
-                }
-            }
-            newBank.setListOfCurrency(listOfCurrency);
-            listOfBanks.add(newBank);
-        }
-    }
 }

@@ -11,9 +11,8 @@ class MyCurrency {
     private float buyCource;
     private float sellCource;
 
-    public MyCurrency(String name, String id) {
+    public MyCurrency(String name) {
         this.name = String.valueOf(name).toUpperCase();
-        this.id = id;
     }
 
     public MyCurrency(String name, String id, float middleCource) {
@@ -32,9 +31,9 @@ class MyCurrency {
         }
     }
 
-    public MyCurrency(String name, String id, float buyCource, float sellCource) {
+    public MyCurrency(String name, float buyCource, float sellCource) {
 
-        this(name, id);
+        this(name);
         this.buyCource = buyCource;
         this.sellCource = sellCource;
     }
