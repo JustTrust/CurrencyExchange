@@ -22,6 +22,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.collect.HashBiMap;
+
 import org.belichenko.a.data_structure.Courses;
 import org.belichenko.a.data_structure.CurrencyData;
 import org.belichenko.a.data_structure.Organizations;
@@ -64,11 +66,12 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     private MyCurrency currentCurrency;
     private ArrayAdapter<Organizations> adapterBank;
     private int adapterBankPosition;
+    CurrencyData currencyData;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-            outState.putInt(BANKS_LIST_INDEX, adapterBankPosition);
+        outState.putInt(BANKS_LIST_INDEX, adapterBankPosition);
     }
 
     @Override
@@ -119,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
         // set banks spinner
         adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listOfBanks);
         bank_spinner.setAdapter(adapterBank);
-
         bank_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -172,9 +174,12 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.action_update:
                 updateDataFromSite();
+                return true;
+            case R.id.action_set_filter:
+                buildFilter();
                 return true;
             case R.id.action_logout:
                 logoutUser();
@@ -183,19 +188,121 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
         return super.onOptionsItemSelected(item);
     }
 
+    private void buildFilter() {
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View setFilterView = layoutInflater.inflate(R.layout.set_filter, null);
+
+        // fill two spinners
+        final Spinner regionsSpinner = (Spinner) setFilterView.findViewById(R.id.spinner_regions);
+        final Spinner citySpinner = (Spinner) setFilterView.findViewById(R.id.spinner_city);
+
+        ArrayList<String> listOfRegions = new ArrayList<>();
+        listOfRegions.add("Все регионы");
+        HashMap<String, String> stateMap = currencyData.regions;
+        if (stateMap != null) {
+            for (Map.Entry<String, String> entry : stateMap.entrySet()) {
+                listOfRegions.add(entry.getValue());
+            }
+        }
+        ArrayAdapter<String> adapterRegions = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item, listOfRegions);
+        regionsSpinner.setAdapter(adapterRegions);
+
+        ArrayList<String> listOfCity = new ArrayList<>();
+        listOfCity.add("Все города");
+        HashMap<String, String> cityMap = currencyData.cities;
+        if (cityMap != null) {
+            for (Map.Entry<String, String> entry : cityMap.entrySet()) {
+                listOfCity.add(entry.getValue());
+            }
+        }
+        ArrayAdapter<String> adapterCity = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item, listOfCity);
+        citySpinner.setAdapter(adapterCity);
+
+        // Build dialog
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert
+                .setTitle(R.string.text_organization_filter)
+                .setView(setFilterView)
+                .setPositiveButton(R.string.okBt, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Log.d(TAG, "onClick() called with: "
+                                + "dialog = [" + dialog + "], whichButton = [" + whichButton + "]");
+                        String selectedRegion = (String) regionsSpinner.getSelectedItem();
+                        String selectedCity = (String) citySpinner.getSelectedItem();
+                        setFilter(selectedRegion, selectedCity);
+                    }
+                })
+                .setNegativeButton(R.string.cancelBt, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //nothing to do
+                    }
+                })
+                .show();
+
+    }
+
+    private void setFilter(String selectedRegion, String selectedCity) {
+
+        if (!selectedRegion.isEmpty()) {
+            if (selectedRegion.equals("Все регионы")) {
+                listOfBanks.clear();
+                listOfBanks.addAll(currencyData.organizations);
+                adapterBank.notifyDataSetChanged();
+            } else {
+                listOfBanks.clear();
+                listOfBanks.addAll(filterByRegion(currencyData.organizations, selectedRegion));
+                adapterBank.notifyDataSetChanged();
+                return;
+            }
+        }
+
+        if (!selectedCity.isEmpty()) {
+            if (selectedCity.equals("Все города")) {
+                listOfBanks.clear();
+                listOfBanks.addAll(currencyData.organizations);
+            } else {
+                listOfBanks.clear();
+                listOfBanks.addAll(filterByCity(currencyData.organizations, selectedCity));
+            }
+            adapterBank.notifyDataSetChanged();
+        }
+    }
+
+    private ArrayList<Organizations> filterByCity(ArrayList<Organizations> organizations, String selectedCity) {
+        ArrayList<Organizations> result = new ArrayList<>();
+        HashBiMap<String ,String > cities = HashBiMap.create(currencyData.cities);
+        String cityID = cities.inverse().get(selectedCity);
+        for (Organizations org:organizations) {
+            if (org.cityId.equals(cityID)){
+                result.add(org);
+            }
+        }
+        return result;
+    }
+
+    private ArrayList<Organizations> filterByRegion(ArrayList<Organizations> organizations, String selectedRegion) {
+        ArrayList<Organizations> result = new ArrayList<>();
+        HashBiMap<String ,String > regions = HashBiMap.create(currencyData.regions);
+        String regionID = regions.inverse().get(selectedRegion);
+        for (Organizations org:organizations) {
+            if (org.regionId.equals(regionID)){
+                result.add(org);
+            }
+        }
+        return result;
+    }
+
     private void updateDataFromSite() {
         Retrofit.getCurrencyData(new Callback<CurrencyData>() {
             @Override
-            public void success(CurrencyData currencyData, Response response) {
-                if (currencyData != null) {
+            public void success(CurrencyData cd, Response response) {
+                if (cd != null) {
+                    currencyData = cd;
                     listOfBanks.clear();
                     listOfBanks.addAll(currencyData.organizations);
                     adapterBank.notifyDataSetChanged();
-                    if (adapterBankPosition > 0){
-                        if (adapterBank.getCount()>= adapterBankPosition){
-                            bank_spinner.setSelection(adapterBankPosition);
-                        }
-                    }
                 }
             }
 

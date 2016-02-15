@@ -16,4 +16,12 @@ public class CurrencyData {
     public HashMap<String, String > regions;
     public HashMap<String, String > cities;
 
+    private static CurrencyData ourInstance = new CurrencyData();
+
+    public static CurrencyData getInstance() {
+        return ourInstance;
+    }
+
+    private CurrencyData() {
+    }
 }
