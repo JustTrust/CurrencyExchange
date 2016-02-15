@@ -23,5 +23,7 @@
     <string name="wrongLogin">Wrong user name or password</string>
     <string name="logout"><u>Logout</u></string>
     <string name="registre_header">Registre</string>
+    <string name="action_update_data">Update data</string>
+    <string name="action_logout">Logout</string>
 
 </resources>

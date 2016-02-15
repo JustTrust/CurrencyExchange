@@ -1,8 +1,6 @@
 package org.belichenko.a.data_structure;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  *
@@ -24,15 +22,6 @@ public class Organizations {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Organizations = " + title );
-        Iterator it = currencies.entrySet().iterator();
-        while (it.hasNext()) {
-            sb.append("\n");
-            Map.Entry pair = (Map.Entry)it.next();
-            Courses course = (Courses) pair.getValue();
-            sb.append(pair.getKey() + " = " + course.ask +" - "+course.bid);
-        }
-        return sb.toString();
+        return title;
     }
 }

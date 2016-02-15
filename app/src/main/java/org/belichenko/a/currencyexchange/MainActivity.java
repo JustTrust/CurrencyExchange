@@ -5,9 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,7 +35,6 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 import butterknife.OnTextChanged;
@@ -55,23 +59,44 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     Spinner buysell_spinner;
     @Bind(R.id.listOfCurrency)
     ListView listOfCurrency;
-    @Bind(R.id.textLoguot)
-    TextView textLoguot;
-
 
     private ArrayList<Organizations> listOfBanks = new ArrayList<>();
     private MyCurrency currentCurrency;
+    private ArrayAdapter<Organizations> adapterBank;
+    private int adapterBankPosition;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        //outState.p
         super.onSaveInstanceState(outState);
+            outState.putInt(BANKS_LIST_INDEX, adapterBankPosition);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void onRestoreInstanceState(Bundle savedState) {
+        super.onRestoreInstanceState(savedState);
+        if (savedState != null) {
+            adapterBankPosition = savedState.getInt(BANKS_LIST_INDEX, 0);
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
+        setContentView(R.layout.container_activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (listOfBanks.isEmpty()) {
+            updateDataFromSite();
+        }
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
         // use Butter knife
         ButterKnife.bind(this);
         // check in preferences a user is login
@@ -87,9 +112,12 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
             setTitle(title + ": " + user);
         }
 
+        if (savedState != null) {
+            adapterBankPosition = savedState.getInt(BANKS_LIST_INDEX, 0);
+        }
 
         // set banks spinner
-        ArrayAdapter<Organizations> adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listOfBanks);
+        adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listOfBanks);
         bank_spinner.setAdapter(adapterBank);
 
         bank_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -98,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
                 Organizations selectedBank = (Organizations) parent.getItemAtPosition(position);
                 if (selectedBank != null) {
                     updateCurrencyList(selectedBank.currencies);
+                    adapterBankPosition = position;
                 }
             }
 
@@ -127,14 +156,47 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.action_update:
+                updateDataFromSite();
+                return true;
+            case R.id.action_logout:
+                logoutUser();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateDataFromSite() {
         Retrofit.getCurrencyData(new Callback<CurrencyData>() {
             @Override
             public void success(CurrencyData currencyData, Response response) {
-
+                if (currencyData != null) {
+                    listOfBanks.clear();
+                    listOfBanks.addAll(currencyData.organizations);
+                    adapterBank.notifyDataSetChanged();
+                    if (adapterBankPosition > 0){
+                        if (adapterBank.getCount()>= adapterBankPosition){
+                            bank_spinner.setSelection(adapterBankPosition);
+                        }
+                    }
+                }
             }
 
             @Override
@@ -201,8 +263,8 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
 
         for (Map.Entry<String, Courses> entry : currency.entrySet()) {
             currencyList.add(new MyCurrency(entry.getKey(),
-                    stringToFloat(entry.getValue().ask),
-                    stringToFloat(entry.getValue().bid)));
+                    stringToFloat(entry.getValue().bid),
+                    stringToFloat(entry.getValue().ask)));
         }
         ArrayAdapter<MyCurrency> adapterCurrency = new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_single_choice, currencyList);
@@ -274,8 +336,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
         return "0";
     }
 
-    @OnClick(R.id.textLoguot)
-    protected void logoutUser(View view) {
+    protected void logoutUser() {
 
         // logout user from preferences
         SharedPreferences mPrefs = this.getSharedPreferences(MAIN_PREFERENCE, MODE_PRIVATE);
