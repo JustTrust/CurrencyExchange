@@ -9,27 +9,28 @@ import android.provider.BaseColumns;
 public final class DBContract {
 
     // To prevent someone from accidentally instantiating the contract class,
-    // give it an empty constructor.
-    public DBContract() {
+    // give it an private constructor.
+    private DBContract() {
     }
 
-    public static final String AUTHORITY = "org.belichenko.a.currencyexchange.provider.DBContract";
+    public static final String AUTHORITY = "org.belichenko.a.database.DBContract";
 
     /* Inner class that defines the table Banks */
     public static abstract class Banks implements BaseColumns {
 
         private static final String SCHEME = "content://";
-        private static final String PATH_BANKS = "/banks";
-        private static final String PATH_BANKS_ID = "/banks/";
+        private static final String PATH_BANKS = "/organizations";
+        private static final String PATH_BANKS_ID = "/organizations/";
         public static final int BANKS_ID_PATH_POSITION = 1;
         public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_BANKS);
-        public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME + AUTHORITY + PATH_BANKS_ID);
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.google.banks";
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.google.banks";
+        public static final Uri CONTENT_ID_URI = Uri.parse(SCHEME + AUTHORITY + PATH_BANKS_ID);
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.google.organizations";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.google.organizations";
         public static final String DEFAULT_SORT_ORDER = "title ASC";
         // fields
         public static final String TABLE_NAME = "organizations";
-        public static final String COLUMN_ID = "id";
+
+        public static final String COLUMN_ORG_ID = "id";
         public static final String COLUMN_OLD_ID = "oldID";
         public static final String COLUMN_ORG_TYPE = "orgType";
         public static final String COLUMN_BRANCH = "branch";
@@ -42,7 +43,8 @@ public final class DBContract {
         public static final String COLUMN_PHONE = "phone";
 
         public static final String[] DEFAULT_PROJECTION = new String[]{
-                DBContract.Banks.COLUMN_ID,
+                DBContract.Banks._ID,
+                DBContract.Banks.COLUMN_ORG_ID,
                 DBContract.Banks.COLUMN_OLD_ID,
                 DBContract.Banks.COLUMN_ORG_TYPE,
                 DBContract.Banks.COLUMN_BRANCH,

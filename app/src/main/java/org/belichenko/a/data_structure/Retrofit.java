@@ -23,7 +23,7 @@ public class Retrofit {
     public static void initialize() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(ENDPOINT)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .build();
         apiInterface = restAdapter.create(ApiInterface.class);
     }

@@ -103,7 +103,7 @@
         android:orientation="vertical"
         android:weightSum="1">
         <LinearLayout
-            android:id="@+id/linlaHeaderProgress"
+            android:id="@+id/progress_layout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"

@@ -1,13 +1,20 @@
 package org.belichenko.a.currencyexchange;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -33,6 +40,8 @@ import org.belichenko.a.data_structure.Courses;
 import org.belichenko.a.data_structure.CurrencyData;
 import org.belichenko.a.data_structure.Organizations;
 import org.belichenko.a.data_structure.Retrofit;
+import org.belichenko.a.database.DBAdapter;
+import org.belichenko.a.database.DBContract;
 import org.belichenko.a.login.LogRegActivity;
 import org.belichenko.a.utils.MyConstants;
 
@@ -57,7 +66,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends AppCompatActivity implements MyConstants {
+public class MainActivity extends AppCompatActivity implements MyConstants, LoaderManager.LoaderCallbacks {
 
     //Bind the Views of the activity_main.xml file
     @Bind(R.id.money_value)
@@ -74,8 +83,8 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     Spinner buysell_spinner;
     @Bind(R.id.listOfCurrency)
     ListView listOfCurrency;
-    @Bind(R.id.linlaHeaderProgress)
-    LinearLayout linlaHeaderProgress;
+    @Bind(R.id.progress_layout)
+    LinearLayout progressLayout;
     @Bind(R.id.fab)
     FloatingActionButton fab;
 
@@ -83,7 +92,43 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     private MyCurrency currentCurrency;
     private ArrayAdapter<Organizations> adapterBank;
     private int adapterBankPosition;
-    CurrencyData currencyData;
+    private CurrencyData currencyData;
+    private DBAdapter dbAdapter;
+
+    private class DbUpdater extends AsyncTask<CurrencyData, Void, Uri> {
+
+        @Override
+        protected Uri doInBackground(CurrencyData[] cd) {
+
+            Uri mNewUri = null;
+            ArrayList<Organizations> org = cd[0].organizations;
+            if (org == null) {
+                Log.d(TAG, "doInBackground() returned: " + null);
+                return null;
+            }
+            for (Organizations organizations : org) {
+                ContentValues mNewValues = new ContentValues();
+                mNewValues.put(DBContract.Banks.COLUMN_ORG_ID, organizations.id);
+                mNewValues.put(DBContract.Banks.COLUMN_OLD_ID, organizations.oldId);
+                mNewValues.put(DBContract.Banks.COLUMN_ORG_TYPE, organizations.orgType);
+                mNewValues.put(DBContract.Banks.COLUMN_BRANCH, organizations.branch);
+                mNewValues.put(DBContract.Banks.COLUMN_TITLE, organizations.title);
+                mNewValues.put(DBContract.Banks.COLUMN_MFO, "");
+                mNewValues.put(DBContract.Banks.COLUMN_REGION, organizations.regionId);
+                mNewValues.put(DBContract.Banks.COLUMN_CITY, organizations.cityId);
+                mNewValues.put(DBContract.Banks.COLUMN_LINK, organizations.link);
+                mNewValues.put(DBContract.Banks.COLUMN_ADDRESS, organizations.address);
+                mNewValues.put(DBContract.Banks.COLUMN_PHONE, organizations.phone);
+
+                mNewUri = getContentResolver().insert(
+                        DBContract.Banks.CONTENT_URI,
+                        mNewValues
+                );
+            }
+
+            return mNewUri;
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -133,16 +178,17 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
         if (savedState != null) {
             adapterBankPosition = savedState.getInt(BANKS_LIST_INDEX, 0);
         }
-
+        dbAdapter = new DBAdapter(this, null, 0);
         // set banks spinner
         adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listOfBanks);
-        bank_spinner.setAdapter(adapterBank);
+        bank_spinner.setAdapter(dbAdapter);
+        getSupportLoaderManager().initLoader(0, null, this);
         bank_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Organizations selectedBank = (Organizations) parent.getItemAtPosition(position);
+                Cursor selectedBank = (Cursor) parent.getItemAtPosition(position);
                 if (selectedBank != null) {
-                    updateCurrencyList(selectedBank.currencies);
+                    //updateCurrencyList(selectedBank.currencies);
                     adapterBankPosition = position;
                 }
             }
@@ -358,16 +404,17 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     }
 
     private void updateDataFromSite() {
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
+        progressLayout.setVisibility(View.VISIBLE);
         Retrofit.getCurrencyData(new Callback<CurrencyData>() {
             @Override
             public void success(CurrencyData cd, Response response) {
                 if (cd != null) {
                     currencyData = cd;
-                    listOfBanks.clear();
-                    listOfBanks.addAll(currencyData.organizations);
-                    adapterBank.notifyDataSetChanged();
-                    linlaHeaderProgress.setVisibility(View.GONE);
+//                    listOfBanks.clear();
+//                    listOfBanks.addAll(currencyData.organizations);
+//                    adapterBank.notifyDataSetChanged();
+                    updateDB(cd);
+                    progressLayout.setVisibility(View.GONE);
                 }
             }
 
@@ -378,10 +425,16 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
                 listOfBanks.clear();
                 listOfBanks.addAll(currencyData.organizations);
                 adapterBank.notifyDataSetChanged();
-                linlaHeaderProgress.setVisibility(View.GONE);
+                progressLayout.setVisibility(View.GONE);
             }
         });
     }
+
+    private void updateDB(CurrencyData cd) {
+        DbUpdater asyncTask = new DbUpdater();
+        asyncTask.execute(cd);
+    }
+
 
     private void setNewCourse(final MyCurrency currency) {
 
@@ -545,6 +598,35 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     @OnTextChanged(R.id.money_value)
     protected void onMoneyValueChanged(CharSequence text) {
         buySellCurrency();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // в этом методе мы создаем CursorLoader c определенным sql-запросом.
+        // В данном случае нам нужно выбрать все записи из таблицы Banks,
+        // и вместо условий выборки и сортировки задаем null.
+        return new CursorLoader(
+                this,
+                DBContract.Banks.CONTENT_URI, //uri для таблицы Classes
+                DBContract.Banks.DEFAULT_PROJECTION, //список столбцов, которые должны присутствовать в выборке
+                null, // условие WHERE для выборки
+                null, // аргументы для условия WHERE
+                null); // порядок сортировки
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object data) {
+        // этот метод вызывается после получения данных из БД. Адаптеру
+        // посылаются новые данные в виде Cursor и сообщение о том, что
+        // данные обновились и нужно заново отобразить список.
+        dbAdapter.swapCursor((Cursor) data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        // если в полученном результате sql-запроса нет никаких строк,
+        // то говорим адаптеру, что список нужно очистить
+        dbAdapter.swapCursor(null);
     }
 
 }

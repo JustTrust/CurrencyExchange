@@ -17,8 +17,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String COMMA_SEP = ",";
     private static final String CREATE_BANK_TABLE =
             "CREATE TABLE IF NOT EXISTS " + Banks.TABLE_NAME + " (" +
-                    Banks._ID + " INTEGER PRIMARY KEY," +
-                    Banks.COLUMN_ID + TEXT_TYPE + COMMA_SEP +
+                    Banks._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    Banks.COLUMN_ORG_ID + TEXT_TYPE + COMMA_SEP +
                     Banks.COLUMN_OLD_ID + INT_TYPE + COMMA_SEP +
                     Banks.COLUMN_ORG_TYPE+ INT_TYPE + COMMA_SEP +
                     Banks.COLUMN_BRANCH+ TEXT_TYPE + COMMA_SEP +
@@ -28,23 +28,23 @@ public class DBHandler extends SQLiteOpenHelper {
                     Banks.COLUMN_CITY + TEXT_TYPE + COMMA_SEP +
                     Banks.COLUMN_LINK + TEXT_TYPE + COMMA_SEP +
                     Banks.COLUMN_ADDRESS + TEXT_TYPE + COMMA_SEP +
-                    Banks.COLUMN_PHONE + TEXT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_PHONE + TEXT_TYPE +
                     " )";
     private static final String CREATE_CURRENCY_TABLE =
             "CREATE TABLE IF NOT EXISTS " + Currency.TABLE_NAME + " (" +
-                    Currency._ID + " INTEGER PRIMARY KEY," +
+                    Currency._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Currency.COLUMN_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
-                    Currency.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
+                    Currency.COLUMN_NAME + TEXT_TYPE +
                     " )";
     private static final String CREATE_COURSE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + Courses.TABLE_NAME + " (" +
-                    Courses._ID + " INTEGER PRIMARY KEY," +
+                    Courses._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Courses.COLUMN_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
                     Courses.COLUMN_BANK_ID + TEXT_TYPE + COMMA_SEP +
                     Courses.COLUMN_CURRENCY_ID + TEXT_TYPE + COMMA_SEP +
                     Courses.COLUMN_DATE + TEXT_TYPE + COMMA_SEP +
                     Courses.COLUMN_BUY + TEXT_TYPE + COMMA_SEP +
-                    Courses.COLUMN_SELL + TEXT_TYPE + COMMA_SEP +
+                    Courses.COLUMN_SELL + TEXT_TYPE +
                     " )";
 
     private static final String SQL_DELETE_ENTRIES =
@@ -61,6 +61,8 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_BANK_TABLE);
         db.execSQL(CREATE_CURRENCY_TABLE);
         db.execSQL(CREATE_COURSE_TABLE);
+//        db.execSQL("insert into organizations values ('1','11', '11', '1', 'branch','Privat','mfo','region','city','link','address','050 369-89-98');");
+//        db.execSQL("insert into organizations values ('2','12', '12', '0', 'branch','Bank 2','mfo','region','city','link','address','044 369-87-96');");
     }
 
     @Override

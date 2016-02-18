@@ -19,5 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider android:name="org.belichenko.a.database.DBProvider"
+            android:authorities="org.belichenko.a.database.DBContract"
+            android:exported="false"/>
+
     </application>
 </manifest>
