@@ -11,15 +11,22 @@ import org.belichenko.a.database.DBContract.*;
  */
 public class DBHandler extends SQLiteOpenHelper {
 
+
     private static final String TEXT_TYPE = " TEXT";
+    private static final String INT_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
     private static final String CREATE_BANK_TABLE =
             "CREATE TABLE IF NOT EXISTS " + Banks.TABLE_NAME + " (" +
                     Banks._ID + " INTEGER PRIMARY KEY," +
-                    Banks.COLUMN_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
-                    Banks.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_ID + TEXT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_OLD_ID + INT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_ORG_TYPE+ INT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_BRANCH+ TEXT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_TITLE + TEXT_TYPE + COMMA_SEP +
                     Banks.COLUMN_MFO + TEXT_TYPE + COMMA_SEP +
-                    Banks.COLUMN_SITE + TEXT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_REGION + TEXT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_CITY + TEXT_TYPE + COMMA_SEP +
+                    Banks.COLUMN_LINK + TEXT_TYPE + COMMA_SEP +
                     Banks.COLUMN_ADDRESS + TEXT_TYPE + COMMA_SEP +
                     Banks.COLUMN_PHONE + TEXT_TYPE + COMMA_SEP +
                     " )";

@@ -1,6 +1,7 @@
 package org.belichenko.a.currencyexchange;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,12 +18,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.HashBiMap;
+import com.google.gson.Gson;
 
 import org.belichenko.a.data_structure.Courses;
 import org.belichenko.a.data_structure.CurrencyData;
@@ -31,9 +36,17 @@ import org.belichenko.a.data_structure.Retrofit;
 import org.belichenko.a.login.LogRegActivity;
 import org.belichenko.a.utils.MyConstants;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -61,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
     Spinner buysell_spinner;
     @Bind(R.id.listOfCurrency)
     ListView listOfCurrency;
+    @Bind(R.id.linlaHeaderProgress)
+    LinearLayout linlaHeaderProgress;
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
 
     private ArrayList<Organizations> listOfBanks = new ArrayList<>();
     private MyCurrency currentCurrency;
@@ -88,11 +105,11 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
         setContentView(R.layout.container_activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        // use Butter knife
+        ButterKnife.bind(this);
         if (listOfBanks.isEmpty()) {
             updateDataFromSite();
         }
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,8 +117,6 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
                         .setAction("Action", null).show();
             }
         });
-        // use Butter knife
-        ButterKnife.bind(this);
         // check in preferences a user is login
         SharedPreferences mPrefs = this.getSharedPreferences(MAIN_PREFERENCE, MODE_PRIVATE);
         String user = mPrefs.getString(USER_IS_LOGIN, null);
@@ -178,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
             case R.id.action_update:
                 updateDataFromSite();
                 return true;
+            case R.id.action_safe:
+                safeDataToFile();
+                return true;
             case R.id.action_set_filter:
                 buildFilter();
                 return true;
@@ -186,6 +204,48 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void safeDataToFile() {
+        Gson gson = new Gson();
+        if (currencyData != null) {
+            String stb = new String();
+            stb = gson.toJson(currencyData);
+            try (FileOutputStream fos = openFileOutput(CURRENCY_DATA_FILE_NAME, Context.MODE_PRIVATE)) {
+                fos.write(stb.getBytes()); //write bites array
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void loadDataFromFile() {
+        Gson gson = new Gson();
+        StringBuilder text = new StringBuilder();
+        File file = getBaseContext().getFileStreamPath(CURRENCY_DATA_FILE_NAME);
+        if (!file.exists()) {
+            Log.d(TAG, "loadDataFromFile() file not exist: " + CURRENCY_DATA_FILE_NAME);
+            return;
+        }
+        if (currencyData == null) {
+            try (FileInputStream fis = openFileInput(CURRENCY_DATA_FILE_NAME)) {
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    text.append(line);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Log.e(TAG, "loadDataFromFile: ", e);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, "loadDataFromFile: ", e);
+            }
+            currencyData = gson.fromJson(text.toString(), CurrencyData.class);
+        }
     }
 
     private void buildFilter() {
@@ -198,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
 
         ArrayList<String> listOfRegions = new ArrayList<>();
         listOfRegions.add("Все регионы");
-        HashMap<String, String> stateMap = currencyData.regions;
+        SortedMap<String, String> stateMap = currencyData.regions;
         if (stateMap != null) {
             for (Map.Entry<String, String> entry : stateMap.entrySet()) {
                 listOfRegions.add(entry.getValue());
@@ -210,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
 
         ArrayList<String> listOfCity = new ArrayList<>();
         listOfCity.add("Все города");
-        HashMap<String, String> cityMap = currencyData.cities;
+        SortedMap<String, String> cityMap = currencyData.cities;
         if (cityMap != null) {
             for (Map.Entry<String, String> entry : cityMap.entrySet()) {
                 listOfCity.add(entry.getValue());
@@ -272,29 +332,33 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
 
     private ArrayList<Organizations> filterByCity(ArrayList<Organizations> organizations, String selectedCity) {
         ArrayList<Organizations> result = new ArrayList<>();
-        HashBiMap<String ,String > cities = HashBiMap.create(currencyData.cities);
-        String cityID = cities.inverse().get(selectedCity);
-        for (Organizations org:organizations) {
-            if (org.cityId.equals(cityID)){
-                result.add(org);
+        HashBiMap<String, String> cities = HashBiMap.create(currencyData.cities);
+        final String cityID = cities.inverse().get(selectedCity);
+        result.addAll(Collections2.filter(organizations, new Predicate<Organizations>() {
+            @Override
+            public boolean apply(Organizations input) {
+                return input.cityId.equals(cityID);
             }
-        }
+        }));
         return result;
     }
 
     private ArrayList<Organizations> filterByRegion(ArrayList<Organizations> organizations, String selectedRegion) {
         ArrayList<Organizations> result = new ArrayList<>();
-        HashBiMap<String ,String > regions = HashBiMap.create(currencyData.regions);
-        String regionID = regions.inverse().get(selectedRegion);
-        for (Organizations org:organizations) {
-            if (org.regionId.equals(regionID)){
-                result.add(org);
+        HashBiMap<String, String> regions = HashBiMap.create(currencyData.regions);
+        final String regionID = regions.inverse().get(selectedRegion);
+
+        result.addAll(Collections2.filter(organizations, new Predicate<Organizations>() {
+            @Override
+            public boolean apply(Organizations input) {
+                return input.regionId.equals(regionID);
             }
-        }
+        }));
         return result;
     }
 
     private void updateDataFromSite() {
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
         Retrofit.getCurrencyData(new Callback<CurrencyData>() {
             @Override
             public void success(CurrencyData cd, Response response) {
@@ -303,12 +367,18 @@ public class MainActivity extends AppCompatActivity implements MyConstants {
                     listOfBanks.clear();
                     listOfBanks.addAll(currencyData.organizations);
                     adapterBank.notifyDataSetChanged();
+                    linlaHeaderProgress.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
                 Log.d(TAG, "failure() called with: " + "error = [" + error + "]");
+                loadDataFromFile();
+                listOfBanks.clear();
+                listOfBanks.addAll(currencyData.organizations);
+                adapterBank.notifyDataSetChanged();
+                linlaHeaderProgress.setVisibility(View.GONE);
             }
         });
     }
